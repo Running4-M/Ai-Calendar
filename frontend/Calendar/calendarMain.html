@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="calendarMain.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  </head>
+  <style>
+  .user-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3000;
+}
+
+.user-menu .user-icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%; /* Fully rounded corners */
+  border: 2px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-menu .user-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0; /* Sidebar starts at its normal position */
+  transform: translateX(100%); /* Fully hide the sidebar by shifting it out of view */
+  height: 100%;
+  width: 300px;
+  background-color: #ffffff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out; /* Smooth slide animation */
+  z-index: 2000;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+
+.sidebar.open {
+  transform: translateX(0); /* Bring the sidebar into view */
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Darken the background */
+  z-index: 1500;
+  display: none;
+}
+
+.overlay.active {
+  display: block; /* Show the overlay when the sidebar is open */
+}
+/* Sidebar styling */
+
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.close-sidebar {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.sidebar-content {
+  margin-top: 20px;
+}
+
+.sidebar-content button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.hidden {
+  display: none;
+}
+
+#logoutButton {
+  background-color: #ff4d4d;
+}
+
+#logoutButton:hover {
+  background-color: #e60000;
+}
+
+#helpButton {
+  background-color: #007bff;
+}
+
+#helpButton:hover {
+  background-color: #0056b3;
+}
+
+.feedback-section {
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+.feedback-section h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.feedback-section p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.feedback-section a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.feedback-section a:hover {
+  text-decoration: underline;
+}
+
+/* Overlay styling */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: none;
+}
+
+/* Open sidebar styles */
+.sidebar.open {
+  right: 0;
+}
+
+.overlay.visible {
+  display: block;
+}
+
+/* Modal styling */
+#eventModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 400px;
+  z-index: 1000;
+  font-family: 'Arial', sans-serif;
+  display: none;
+}
+
+#modalContent h3 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+#modalContent p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+#modalContent input[type="text"],
+#modalContent textarea,
+#modalContent select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#modalContent input[type="text"]:focus,
+#modalContent textarea:focus,
+#modalContent select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#modalContent textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+#modalContent button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#saveEvent {
+  background: #007bff;
+  color: #fff;
+}
+
+#deleteEvent {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+#closeModal {
+  background: #f1f1f1;
+  color: #555;
+}
+
+#modalContent button:hover {
+  transform: translateY(-2px);
+}
+
+#saveEvent:hover {
+  background: #0056b3;
+}
+
+#deleteEvent:hover {
+  background: #d9363e;
+}
+
+#closeModal:hover {
+  background: #e0e0e0;
+}
+
+/* FullCalendar view adjustments */
+#calendar {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Responsiveness for smaller screens */
+@media screen and (max-width: 768px) {
+  #eventModal {
+    width: 90%;
+    max-width: 350px;
+  }
+
+  .menu-options {
+    width: 100%;
+    right: 0;
+    top: 45px;
+  }
+
+  .user-menu {
+    top: 5px;
+    right: 5px;
+  }
+}
+
+#modalContent button:active {
+  transform: translateY(0);
+}
+#chatgptResponsesButton {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#chatgptResponsesButton:hover {
+  background: linear-gradient(135deg, #0056b3, #003d80);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+#chatgptResponsesButton:active {
+  background: linear-gradient(135deg, #004080, #002b5c);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+
+  </style>
+  <body>
+    <div id="userMenu" class="user-menu">
+      <button id="menuButton">
+        <img src="../assets/user-icon.png" alt="User Icon" class="user-icon" />
+      </button>
+    </div>
+    
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <h2>User Menu</h2>
+        <button id="closeSidebar" class="close-sidebar">&times;</button>
+      </div>
+      <div class="sidebar-content">
+        <button id="logoutButton">Log Out</button>
+        <button id="helpButton">Help</button>
+        <div class="feedback-section">
+          <h3>Any Feedback?</h3>
+          <p>Email: <a href="mailto:mchlrotaru@gmail.com">mchlrotaru@gmail.com</a></p>
+        <p>Discord: <a href="https://discord.gg/b35jhnCH" target="_blank">Visit discord</a></p>
+        </div>
+      </div>
+    </div>
+    
+    <div id="overlay" class="overlay"></div>
+
+    <div id="calendar" style="max-width: 900px; margin: 40px auto;"></div>
+
+    <!-- Modal -->
+    
+    <div id="eventModal">
+      <div id="modalContent">
+        <h3>Hi! Let’s set up your task 👋</h3>
+        
+        <!-- Question 1 -->
+        <p>What would you like to do?</p>
+        <input type="text" id="eventTitle" placeholder="E.g., Write about animals" />
+        <input type="text" id="eventDate" disabled placeholder="Event Date" />
+        
+        <!-- Question 2 -->
+        <p>How can I help with this task?</p>
+        <select id="aiType">
+          <!-- Content Creation Category -->
+          <optgroup label="Content Creation">
+              <option value="brainstorm">Brainstorm Ideas</option>
+              <option value="outline">Create an Outline</option>
+              <option value="list">Generate a List</option>
+              <option value="create-content">Create Content (Articles, Blog Posts, Social Media)</option>
+              <option value="product-description">Generate Product Description</option>
+          </optgroup>
+      
+          <!-- Writing Category -->
+          <optgroup label="Writing">
+              <option value="summary">Summarize Information</option>
+              <option value="rewrite">Rewrite Text (Paraphrasing)</option>
+              <option value="email-draft">Email Draft</option>
+              <option value="creative-writing">Creative Writing (Stories, Poems)</option>
+          </optgroup>
+      
+          <!-- Research Category -->
+          <optgroup label="Research">
+              <option value="research">Conduct Research (Summarize Information)</option>
+              <option value="learning-help">Learning Help (Explanations)</option>
+          </optgroup>
+      
+          <!-- Programming Category -->
+          <optgroup label="Programming">
+              <option value="code-assist">Code Assistance (Programming, Debugging, Snippets)</option>
+          </optgroup>
+      
+          <!-- Miscellaneous Category -->
+          <optgroup label="Miscellaneous">
+              <option value="answer-questions">Answer Questions</option>
+              <option value="translation">Translation</option>
+              <option value="other">Other</option>
+          </optgroup>
+      </select>
+        
+        <!-- Question 3 -->
+        <p>Any specific details or focus areas I should know about?</p>
+        <textarea id="taskDetails" placeholder="E.g., Focus on nocturnal animals and their diet."></textarea>
+        
+        <button id="saveEvent">Save</button>
+        <button id="deleteEvent" style="display: none;">Delete</button>
+        <button id="closeModal">Cancel</button>
+      </div>
+    </div>
+
+    <button id="chatgptResponsesButton">Calendar AI Responses</button>
+
+    <script src="calendarMain.js" type="module"></script>
+    <script src="../backend/firebase.js" type="module"></script>
+  </body>
+</html>
