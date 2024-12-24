@@ -11,7 +11,8 @@ async function sendMessageToModel(userMessage) {
   chatState.messages.push({ role: "user", content: userMessage });
 
   // Request API key from your backend (this should be set securely)
-  const apiKeyResponse = await fetch("https://calendar-ai-backend.onrender.com/api/getApiKey");
+  const apiKeyResponse = await fetch("https://calendar-ai-backend.onrender.com/api/getChatApiKey"); // Updated to fetch chat API key
+
   if (!apiKeyResponse.ok) {
     throw new Error("Failed to fetch API key.");
   }
