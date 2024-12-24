@@ -55,8 +55,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     noResponsesMessage.textContent = "No responses to display";
     responseContainer.appendChild(noResponsesMessage);
   } else {
-    // Render responses grouped by date
-    Object.keys(dateGroups).forEach((date) => {
+    // Sort dates in descending order (most recent first)
+    const sortedDates = Object.keys(dateGroups).sort((a, b) => new Date(b) - new Date(a));
+
+    // Render responses grouped by sorted date
+    sortedDates.forEach((date) => {
       const dateHeader = document.createElement("h2");
       dateHeader.className = "response-date";
       dateHeader.textContent = date;
