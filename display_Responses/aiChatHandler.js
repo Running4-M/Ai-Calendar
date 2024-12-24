@@ -25,8 +25,6 @@ async function sendMessageToModel(userMessage) {
       Authorization: `Bearer ${apiKey}`, // Use API key securely
     },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
-      temperature: 0.7,
       messages: chatState.messages, // Send full conversation context
     }),
   });
