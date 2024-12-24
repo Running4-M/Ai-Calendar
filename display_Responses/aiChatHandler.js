@@ -2,7 +2,7 @@ const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Updated
 
 // Helper: Send a message to the GPT-4 model
 const chatState = {
-  conversationId: null, 
+  conversationId: null,
   messages: [], // Array to hold conversation context
 };
 
@@ -14,7 +14,7 @@ async function sendMessageToModel(userMessage) {
     // Log the conversation context to see the structure of messages
     console.log("Conversation Context:", JSON.stringify(chatState.messages, null, 2));
 
-    // Request API key from your backend (this should be set securely)
+    // Request API key from your backend
     const apiKeyResponse = await fetch("https://calendar-ai-backend.onrender.com/api/getChatApiKey"); // Updated to fetch chat API key
     if (!apiKeyResponse.ok) {
       console.error("Failed to fetch API key. Status:", apiKeyResponse.status);
