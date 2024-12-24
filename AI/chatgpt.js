@@ -61,12 +61,21 @@ async function fetchChatGPTResponse() {
 }
 
 async function sendToOpenAI(eventData) {
+  // Fetch the API key from your backend
+  const apiKeyResponse = await fetch("https://calendar-ai-backend.onrender.com/api/getApiKey");
+
+  if (!apiKeyResponse.ok) {
+    throw new Error("Failed to fetch API key.");
+  }
+
+  const { apiKey } = await apiKeyResponse.json(); // Get the API key from the response
   const openaiUrl = "https://calendar-ai-backend.onrender.com/api/calendar"; // Updated to Render backend URL
 
   const response = await fetch(openaiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`, // Use the API key here
     },
     body: JSON.stringify({
       eventData: eventData, // Send the event data directly to the backend
