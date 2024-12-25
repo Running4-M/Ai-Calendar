@@ -6,6 +6,18 @@ const chatState = {
   messages: [], // Array to hold conversation context
 };
 
+// Initialize chat with context
+export function initializeChat(aiResponseContext) {
+  if (chatState.messages.length === 0) {
+    // Add the AI response from the calendar as the initial context
+    chatState.messages.push({
+      role: "system",
+      content: aiResponseContext || "You are a helpful assistant that provides insightful suggestions based on user prompts.",
+    });
+  }
+  console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
+}
+
 async function sendMessageToModel(userMessage) {
   try {
     // Add user message to context
@@ -72,7 +84,3 @@ export async function sendMessageToAI(userMessage) {
   }
 }
 
-// Initialize chat with context
-export function initializeChat(responseContext) {
-  console.log("Chat initialized with context:", responseContext);
-}
