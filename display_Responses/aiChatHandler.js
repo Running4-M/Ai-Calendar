@@ -2,11 +2,12 @@ const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat AP
 
 // Helper: Chat State to maintain context
 const chatState = {
+  userId: null, // User ID to identify the user
   messages: [], // Holds conversation context
 };
 
 // Initialize chat with the first AI context
-export function initializeChat(aiResponseContext) {
+export function initializeChat(aiResponseContext, userId) {
   if (chatState.messages.length === 0) {
     // Set up system role with initial context
     chatState.messages.push({
@@ -15,6 +16,8 @@ export function initializeChat(aiResponseContext) {
         "You are a helpful assistant that provides insightful suggestions based on user prompts.",
     });
   }
+  // Set the userId
+  chatState.userId = userId;
   console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
 }
 
@@ -26,6 +29,7 @@ async function sendMessageToModel(userMessage) {
 
     // Prepare the API request body
     const requestBody = {
+      userId: chatState.userId, // Include userId in the request
       userMessage,
       conversationHistory: chatState.messages, // Send the complete conversation history
     };
@@ -64,3 +68,4 @@ export async function sendMessageToAI(userMessage) {
     throw error;
   }
 }
+
