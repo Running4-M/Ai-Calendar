@@ -34,7 +34,7 @@ async function sendMessageToModel(userMessage) {
     }
     const { apiKey } = await apiKeyResponse.json();
 
-    // Prepare the request body with user and AI roles explicitly defined
+    // Prepare the request body with user and system roles explicitly defined
     const requestBody = {
       model: "gpt-4o-mini",
       temperature: 0.7,
@@ -64,7 +64,7 @@ async function sendMessageToModel(userMessage) {
 
     // Add AI response to context
     const aiMessage = responseBody;
-    chatState.messages.push({ role: "assistant", content: aiMessage.content });
+    chatState.messages.push({ role: "system", content: aiMessage.content });
 
     return aiMessage.content;
   } catch (error) {
@@ -83,4 +83,3 @@ export async function sendMessageToAI(userMessage) {
     throw error;
   }
 }
-
