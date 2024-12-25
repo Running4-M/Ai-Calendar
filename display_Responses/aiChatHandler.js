@@ -1,15 +1,14 @@
-const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Updated endpoint for chat completions
+const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
-// Helper: Send a message to the GPT-4 model
+// Helper: Chat State to maintain context
 const chatState = {
-  conversationId: null,
-  messages: [], // Array to hold conversation context
+  messages: [], // Holds conversation context
 };
 
-// Initialize chat with context
+// Initialize chat with the first AI context
 export function initializeChat(aiResponseContext) {
   if (chatState.messages.length === 0) {
-    // Add the AI response from the calendar as the initial context
+    // Set up system role with initial context
     chatState.messages.push({
       role: "system",
       content: aiResponseContext || "You are a helpful assistant that provides insightful suggestions based on user prompts.",
@@ -18,52 +17,36 @@ export function initializeChat(aiResponseContext) {
   console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
 }
 
+// Helper: Send a message to the AI
 async function sendMessageToModel(userMessage) {
   try {
-    // Add user message to context
+    // Add the user's message to the conversation context
     chatState.messages.push({ role: "user", content: userMessage });
 
-    // Log the conversation context to see the structure of messages
-    console.log("Conversation Context:", JSON.stringify(chatState.messages, null, 2));
-
-    // Request API key from your backend
-    const apiKeyResponse = await fetch("https://calendar-ai-backend.onrender.com/api/getChatApiKey");
-    if (!apiKeyResponse.ok) {
-      console.error("Failed to fetch API key. Status:", apiKeyResponse.status);
-      throw new Error("Failed to fetch API key.");
-    }
-    const { apiKey } = await apiKeyResponse.json();
-
-    // Prepare the request body with user and system roles explicitly defined
+    // Prepare the API request body
     const requestBody = {
-      model: "gpt-4o-mini",
-      temperature: 0.7,
-      messages: chatState.messages,
+      userMessage,
+      conversationHistory: chatState.messages, // Send the complete conversation history
     };
 
-    // Log the request body before sending the request
-    console.log("Request Body:", JSON.stringify(requestBody, null, 2));
+    console.log("Sending to backend:", JSON.stringify(requestBody, null, 2));
 
+    // Make the request to the backend
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`, // Use API key securely
       },
       body: JSON.stringify(requestBody),
     });
 
-    // Log the response status and body
-    console.log("Response Status:", response.status);
-    const responseBody = await response.json();
-    console.log("Response Body:", JSON.stringify(responseBody, null, 2));
-
     if (!response.ok) {
-      throw new Error(`Failed to send message: ${response.statusText}`);
+      throw new Error(`Failed to fetch AI response: ${response.statusText}`);
     }
 
-    // Add AI response to context
-    const aiMessage = responseBody;
+    const aiMessage = await response.json();
+
+    // Add the AI response to the conversation context
     chatState.messages.push({ role: "system", content: aiMessage.content });
 
     return aiMessage.content;
@@ -73,13 +56,12 @@ async function sendMessageToModel(userMessage) {
   }
 }
 
-// Exported function to send user messages and get the response
+// Exported function to interact with the AI
 export async function sendMessageToAI(userMessage) {
   try {
-    const response = await sendMessageToModel(userMessage);
-    return response;
+    return await sendMessageToModel(userMessage);
   } catch (error) {
-    console.error("Error in chat:", error);
+    console.error("Error in chat interaction:", error);
     throw error;
   }
 }
