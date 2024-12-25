@@ -1,3 +1,5 @@
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
+
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
 // Helper: Chat State to maintain context
