@@ -1,6 +1,7 @@
-import { auth } from '../backend/sharedAuthHelper.js'; // Import auth from firebase.js
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { initializeAuthState, getUserId, isUserLoggedIn } from "../backend/sharedAuthHelper.js"; // Correct import
+// Import necessary functions
+import { auth } from '../backend/sharedAuthHelper.js'; // Import auth from sharedAuthHelper.js
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import onAuthStateChanged to track auth state
+import { initializeAuthState, getUserId, isUserLoggedIn } from "../backend/sharedAuthHelper.js"; // Correct imports
 
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
@@ -9,6 +10,17 @@ const chatState = {
   userId: null, // User ID to identify the user
   messages: [], // Holds conversation context
 };
+
+// Listen for changes in authentication state
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("User is logged in:", user.uid);
+    chatState.userId = user.uid; // Update the user ID
+  } else {
+    console.log("No user is logged in.");
+    chatState.userId = null; // Reset the user ID
+  }
+});
 
 // Initialize chat with the first AI context
 export async function initializeChat(aiResponseContext) {
