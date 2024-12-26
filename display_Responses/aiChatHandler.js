@@ -27,11 +27,12 @@ export async function initializeChat(aiResponseContext) {
   try {
     // Fetch and set userId
     if (!chatState.userId) {
+      console.log("Fetching userId...");
       chatState.userId = await fetchUserId();
-      console.log("User ID set:", chatState.userId);
+      console.log("User ID fetched and set:", chatState.userId);
     }
 
-    // Set up system role with initial context if not already set
+    // Set up the initial system message if chatState.messages is empty
     if (chatState.messages.length === 0) {
       chatState.messages.push({
         role: "system",
@@ -39,11 +40,9 @@ export async function initializeChat(aiResponseContext) {
           "You are a helpful assistant that provides insightful suggestions based on user prompts.",
       });
     }
-
     console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
   } catch (error) {
-    console.error("Error initializing chat:", error);
-    throw error; // Propagate error to ensure issues are handled upstream
+    console.error("Error in initializeChat:", error);
   }
 }
 
