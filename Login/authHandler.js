@@ -52,6 +52,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     // Check the current user count
     const docSnapshot = await getDoc(userCountRef);
     const userCount = docSnapshot.exists() ? docSnapshot.data().userCount : 0;
+    console.log("Current user count:", userCount); // Debugging: Log the current user count
 
     // Restrict signup if the user count exceeds the limit
     if (userCount >= 2) {
