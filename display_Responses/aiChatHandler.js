@@ -12,6 +12,9 @@ const chatState = {
 // Initialize chat with the first AI context
 export async function initializeChat(aiResponseContext) {
   try {
+    // Debug: Log initialization process
+    console.log("Initializing chat...");
+
     // Initialize userId using sharedAuthHelper.js
     if (!chatState.userId) {
       console.log("Fetching userId using sharedAuthHelper...");
@@ -32,8 +35,9 @@ export async function initializeChat(aiResponseContext) {
         content: aiResponseContext || 
           "You are a helpful assistant that provides insightful suggestions based on user prompts.",
       });
+      console.log("Initial system message set:", chatState.messages[0]);
     }
-    console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
+    console.log("Chat initialized successfully with context:", JSON.stringify(chatState.messages, null, 2));
   } catch (error) {
     console.error("Error in initializeChat:", error);
   }
@@ -42,21 +46,27 @@ export async function initializeChat(aiResponseContext) {
 // Helper: Send a message to the AI
 async function sendMessageToModel(userMessage) {
   try {
+    // Debug: Check for userId before proceeding
+    console.log("Preparing to send message. Current userId:", chatState.userId);
     if (!chatState.userId) {
       console.error("Cannot send message: userId is null.");
       throw new Error("User ID is not set.");
     }
 
+    // Add the user's message to the chat state
     chatState.messages.push({ role: "user", content: userMessage });
+    console.log("User message added to chatState:", userMessage);
 
+    // Prepare the request payload
     const requestBody = {
       userId: chatState.userId,
       userMessage,
       conversationHistory: chatState.messages,
     };
 
-    console.log("Request payload:", JSON.stringify(requestBody, null, 2));
+    console.log("Request payload prepared:", JSON.stringify(requestBody, null, 2));
 
+    // Make the POST request to the backend
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -69,8 +79,14 @@ async function sendMessageToModel(userMessage) {
       throw new Error(`Failed to fetch AI response: ${response.statusText}`);
     }
 
+    // Process the response
     const aiMessage = await response.json();
+    console.log("AI response received:", aiMessage);
+
+    // Add the AI's message to the chat state
     chatState.messages.push({ role: "system", content: aiMessage.content });
+    console.log("AI message added to chatState:", aiMessage.content);
+
     return aiMessage.content;
   } catch (error) {
     console.error("Error in sendMessageToModel:", error);
@@ -81,7 +97,10 @@ async function sendMessageToModel(userMessage) {
 // Exported function to interact with the AI
 export async function sendMessageToAI(userMessage) {
   try {
-    return await sendMessageToModel(userMessage);
+    console.log("Initiating sendMessageToAI with userMessage:", userMessage);
+    const aiResponse = await sendMessageToModel(userMessage);
+    console.log("AI response from sendMessageToAI:", aiResponse);
+    return aiResponse;
   } catch (error) {
     console.error("Error in chat interaction:", error);
     throw error;
