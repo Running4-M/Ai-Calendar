@@ -35,6 +35,8 @@ async function initializeUserCount() {
   if (!docSnapshot.exists()) {
     await setDoc(userCountRef, { count: 0 }); // Use setDoc to create the document with the count field
     console.log("User count initialized to 0.");
+  } else {
+    console.log("User count document already exists.");
   }
 }
 
@@ -51,7 +53,12 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   try {
     // Check the current user count
     const docSnapshot = await getDoc(userCountRef);
-    const userCount = docSnapshot.exists() ? docSnapshot.data().count : 0;
+    if (!docSnapshot.exists()) {
+      console.log("User count document does not exist.");
+      return;
+    }
+
+    const userCount = docSnapshot.data().count;
     console.log("Current user count:", userCount); // Debugging: Log the current user count
 
     // Restrict signup if the user count exceeds the limit
