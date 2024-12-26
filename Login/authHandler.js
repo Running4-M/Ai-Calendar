@@ -53,7 +53,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     const totalUsers = docSnapshot.exists() ? docSnapshot.data().totalUsers : 0;
 
     // Restrict signup if the user count exceeds 20
-    if (totalUsers >= 20) {
+    if (totalUsers >= 2) {
       alert("Signup limit reached. No more users can register at this time.");
       return;
     }
