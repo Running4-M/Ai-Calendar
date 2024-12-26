@@ -117,7 +117,7 @@ export async function sendMessageToAI(userMessage) {
     // Ensure the userId is initialized before proceeding
     if (!chatState.userId) {
       console.log("User is not logged in, userId not set. Redirecting to login page.");
-      window.location.href = "../Login/login.html"; // Redirect to login page if no userId
+      
       return; // Prevent further execution
     }
 
