@@ -6,6 +6,7 @@ let userId = null; // Shared userId variable
 /**
  * Initialize the userId by listening to Firebase Authentication state.
  * Resolves when the user is authenticated and their ID is available.
+ * Rejects if the user is not logged in, and redirects to login page.
  */
 export async function initializeAuthState() {
   return new Promise((resolve, reject) => {
@@ -17,6 +18,8 @@ export async function initializeAuthState() {
         console.warn("No user logged in.");
         userId = null;
         reject("User not logged in.");
+        // Redirect to login page if no user is authenticated
+        window.location.href = "../Login/login.html";
       }
     });
   });
