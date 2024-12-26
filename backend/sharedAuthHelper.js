@@ -1,5 +1,5 @@
 
-import { auth } from './backend/firebase.js'; // Import auth from firebase.js
+import { auth } from './firebase.js'; // Import auth from firebase.js
 
 
 
