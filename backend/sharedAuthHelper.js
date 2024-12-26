@@ -1,20 +1,22 @@
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";;
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-let userId = null; // Shared userId variable accessible across files
+const auth = getAuth(); // Initialize auth globally
+let userId = null; // Shared userId variable
 
 /**
  * Initialize the userId by listening to Firebase Authentication state.
  * Resolves when the user is authenticated and their ID is available.
  */
-export async function initializeUserId() {
-  const auth = getAuth();
+export async function initializeAuthState() {
   return new Promise((resolve, reject) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         userId = user.uid; // Set the shared userId
         resolve(user.uid); // Resolve with the user ID
       } else {
-        reject("User not logged in."); // Reject if no user is logged in
+        console.warn("No user logged in.");
+        userId = null;
+        reject("User not logged in.");
       }
     });
   });
@@ -26,7 +28,7 @@ export async function initializeUserId() {
  */
 export function getUserId() {
   if (!userId) {
-    throw new Error("User ID is not initialized. Call initializeUserId first.");
+    throw new Error("User ID is not initialized. Call initializeAuthState first.");
   }
   return userId;
 }
