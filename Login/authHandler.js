@@ -35,6 +35,8 @@ async function initializeUserCount() {
   if (!docSnapshot.exists()) {
     await setDoc(userCountRef, { totalUsers: 0 }); // Use setDoc to create the document if it doesn't exist
     console.log("User count initialized to 0.");
+  } else {
+    console.log("User count already initialized.");
   }
 }
 
@@ -52,6 +54,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     // Check the current user count
     const docSnapshot = await getDoc(userCountRef);
     const totalUsers = docSnapshot.exists() ? docSnapshot.data().totalUsers : 0;
+    console.log("Current totalUsers:", totalUsers); // Log current totalUsers
 
     // Restrict signup if the user count exceeds the limit
     if (totalUsers >= 2) {
@@ -73,6 +76,11 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     await updateDoc(userCountRef, {
       totalUsers: totalUsers + 1,
     });
+
+    // Check if the updateDoc worked by retrieving the value again
+    const updatedDocSnapshot = await getDoc(userCountRef);
+    const updatedTotalUsers = updatedDocSnapshot.exists() ? updatedDocSnapshot.data().totalUsers : 0;
+    console.log("Updated totalUsers:", updatedTotalUsers); // Log updated totalUsers
 
     alert("Signup successful. Welcome!");
     window.location.href = "../Calendar/calendarMain.html"; // Redirect to Calendar page
