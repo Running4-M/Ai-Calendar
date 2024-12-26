@@ -1,8 +1,8 @@
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
 import { auth } from './backend/firebase.js'; // Import auth from firebase.js
 
 
-const auth = getAuth(); // Initialize auth globally
+
 let userId = null; // Shared userId variable
 
 /**
