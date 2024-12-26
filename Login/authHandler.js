@@ -5,6 +5,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import {
   getAuth,
@@ -14,7 +15,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 
 const auth = getAuth();
-const userCountRef = doc(db, "userCount", "stats"); // Firestore document to track user count
+const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers
 
 // Utility: Display error messages
 function displayError(errorCode) {
@@ -28,7 +29,14 @@ function displayError(errorCode) {
   return errorMessages[errorCode] || "An error occurred. Please try again.";
 }
 
-
+// Initialize user count if not set
+async function initializeUserCount() {
+  const docSnapshot = await getDoc(userCountRef);
+  if (!docSnapshot.exists()) {
+    await setDoc(userCountRef, { totalUsers: 0 }); // Use setDoc to create the document if it doesn't exist
+    console.log("User count initialized to 0.");
+  }
+}
 
 // Handle signup
 document.getElementById("signupButton").addEventListener("click", async () => {
@@ -45,7 +53,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     const docSnapshot = await getDoc(userCountRef);
     const totalUsers = docSnapshot.exists() ? docSnapshot.data().totalUsers : 0;
 
-    // Restrict signup if the user count exceeds 20
+    // Restrict signup if the user count exceeds the limit
     if (totalUsers >= 2) {
       alert("Signup limit reached. No more users can register at this time.");
       return;
