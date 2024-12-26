@@ -1,7 +1,7 @@
 // Import necessary functions
 import { auth } from '../backend/sharedAuthHelper.js'; // Import auth from sharedAuthHelper.js
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import onAuthStateChanged to track auth state
-import { initializeAuthState, getUserId, isUserLoggedIn } from "../backend/sharedAuthHelper.js"; // Correct imports
+import { initializeAuthState, getUserId } from "../backend/sharedAuthHelper.js"; // Correct imports
 
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
@@ -27,7 +27,7 @@ export async function initializeChat(aiResponseContext) {
   try {
     console.log("Initializing chat...");
 
-    // Ensure userId is initialized
+    // Ensure userId is initialized (but only once)
     if (!chatState.userId) {
       console.log("Fetching userId using sharedAuthHelper...");
       await initializeAuthState(); // Corrected function name
@@ -115,9 +115,9 @@ export async function sendMessageToAI(userMessage) {
     console.log("Initiating sendMessageToAI with userMessage:", userMessage);
 
     // Ensure the userId is initialized before proceeding
-    if (!isUserLoggedIn()) {
-      console.log("User is not logged in, redirecting to login page.");
-      window.location.href = "../Login/login.html"; // Redirect to login page
+    if (!chatState.userId) {
+      console.log("User is not logged in, userId not set. Redirecting to login page.");
+      window.location.href = "../Login/login.html"; // Redirect to login page if no userId
       return; // Prevent further execution
     }
 
