@@ -32,6 +32,11 @@ export async function initializeChat(aiResponseContext) {
       console.log("User ID fetched and set:", chatState.userId);
     }
 
+    if (!chatState.userId) {
+      console.error("User ID is null. Chat cannot proceed.");
+      return;
+    }
+
     // Set up the initial system message if chatState.messages is empty
     if (chatState.messages.length === 0) {
       chatState.messages.push({
@@ -49,19 +54,21 @@ export async function initializeChat(aiResponseContext) {
 // Helper: Send a message to the AI
 async function sendMessageToModel(userMessage) {
   try {
-    // Add the user's message to the conversation context
+    if (!chatState.userId) {
+      console.error("Cannot send message: userId is null.");
+      throw new Error("User ID is not set.");
+    }
+
     chatState.messages.push({ role: "user", content: userMessage });
 
-    // Prepare the API request body
     const requestBody = {
-      userId: chatState.userId, // Include userId in the request
+      userId: chatState.userId,
       userMessage,
-      conversationHistory: chatState.messages, // Send the complete conversation history
+      conversationHistory: chatState.messages,
     };
 
-    console.log("Sending to backend:", JSON.stringify(requestBody, null, 2));
+    console.log("Request payload:", JSON.stringify(requestBody, null, 2));
 
-    // Make the request to the backend
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -69,14 +76,13 @@ async function sendMessageToModel(userMessage) {
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Backend error: ${errorText}`);
       throw new Error(`Failed to fetch AI response: ${response.statusText}`);
     }
 
     const aiMessage = await response.json();
-
-    // Add the AI response to the conversation context
     chatState.messages.push({ role: "system", content: aiMessage.content });
-
     return aiMessage.content;
   } catch (error) {
     console.error("Error in sendMessageToModel:", error);
