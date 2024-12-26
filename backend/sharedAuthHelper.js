@@ -1,7 +1,5 @@
-
 import { auth } from './firebase.js'; // Import auth from firebase.js
-
-
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import onAuthStateChanged to track auth state
 
 let userId = null; // Shared userId variable
 
@@ -44,3 +42,5 @@ export function getUserId() {
 export function isUserLoggedIn() {
   return userId !== null;
 }
+
+export { auth }; // Export auth from sharedAuthHelper.js
