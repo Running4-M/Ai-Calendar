@@ -2,6 +2,9 @@ import { db } from "../backend/firebase.js"; // Import Firestore instance from f
 import {
   collection,
   addDoc,
+  doc,
+  getDoc,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import {
   getAuth,
@@ -11,6 +14,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 
 const auth = getAuth();
+const userCountRef = doc(db, "userCount", "stats"); // Firestore document to track user count
 
 // Utility: Display error messages
 function displayError(errorCode) {
@@ -24,6 +28,15 @@ function displayError(errorCode) {
   return errorMessages[errorCode] || "An error occurred. Please try again.";
 }
 
+// Initialize user count if not set
+async function initializeUserCount() {
+  const docSnapshot = await getDoc(userCountRef);
+  if (!docSnapshot.exists()) {
+    await updateDoc(userCountRef, { totalUsers: 0 });
+    console.log("User count initialized to 0.");
+  }
+}
+
 // Handle signup
 document.getElementById("signupButton").addEventListener("click", async () => {
   const email = document.getElementById("signupEmail").value.trim();
@@ -35,6 +48,16 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   }
 
   try {
+    // Check the current user count
+    const docSnapshot = await getDoc(userCountRef);
+    const totalUsers = docSnapshot.exists() ? docSnapshot.data().totalUsers : 0;
+
+    // Restrict signup if the user count exceeds 20
+    if (totalUsers >= 20) {
+      alert("Signup limit reached. No more users can register at this time.");
+      return;
+    }
+
     // Create a new user with Firebase Authentication
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -43,6 +66,11 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     await addDoc(collection(db, "users"), {
       uid: user.uid,
       email,
+    });
+
+    // Increment the user count in Firestore
+    await updateDoc(userCountRef, {
+      totalUsers: totalUsers + 1,
     });
 
     alert("Signup successful. Welcome!");
@@ -97,3 +125,6 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "../Calendar/calendarMain.html"; // Redirect if logged in
   }
 });
+
+// Initialize user count on page load
+initializeUserCount();
