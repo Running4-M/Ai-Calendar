@@ -33,7 +33,7 @@ function displayError(errorCode) {
 async function initializeUserCount() {
   const docSnapshot = await getDoc(userCountRef);
   if (!docSnapshot.exists()) {
-    await setDoc(userCountRef, { userCount: 0 }); // Use setDoc to create the document with the userCount field
+    await setDoc(userCountRef, { count: 0 }); // Use setDoc to create the document with the count field
     console.log("User count initialized to 0.");
   }
 }
@@ -51,7 +51,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   try {
     // Check the current user count
     const docSnapshot = await getDoc(userCountRef);
-    const userCount = docSnapshot.exists() ? docSnapshot.data().userCount : 0;
+    const userCount = docSnapshot.exists() ? docSnapshot.data().count : 0;
     console.log("Current user count:", userCount); // Debugging: Log the current user count
 
     // Restrict signup if the user count exceeds the limit
@@ -72,7 +72,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
 
     // Increment the user count in Firestore
     await updateDoc(userCountRef, {
-      userCount: userCount + 1, // Increment the userCount field
+      count: userCount + 1, // Increment the count field
     });
 
     alert("Signup successful. Welcome!");
