@@ -12,10 +12,9 @@ const chatState = {
 // Initialize chat with the first AI context
 export async function initializeChat(aiResponseContext) {
   try {
-    // Debug: Log initialization process
     console.log("Initializing chat...");
 
-    // Initialize userId using sharedAuthHelper.js
+    // Ensure userId is initialized
     if (!chatState.userId) {
       console.log("Fetching userId using sharedAuthHelper...");
       await initializeUserId(); // Fetch and set the userId globally
@@ -25,7 +24,7 @@ export async function initializeChat(aiResponseContext) {
 
     if (!chatState.userId) {
       console.error("User ID is null. Chat cannot proceed.");
-      return;
+      throw new Error("User ID must be initialized before starting chat.");
     }
 
     // Set up the initial system message if chatState.messages is empty
@@ -37,17 +36,20 @@ export async function initializeChat(aiResponseContext) {
       });
       console.log("Initial system message set:", chatState.messages[0]);
     }
+
     console.log("Chat initialized successfully with context:", JSON.stringify(chatState.messages, null, 2));
   } catch (error) {
     console.error("Error in initializeChat:", error);
+    throw error;
   }
 }
 
 // Helper: Send a message to the AI
 async function sendMessageToModel(userMessage) {
   try {
-    // Debug: Check for userId before proceeding
     console.log("Preparing to send message. Current userId:", chatState.userId);
+
+    // Check for valid userId
     if (!chatState.userId) {
       console.error("Cannot send message: userId is null.");
       throw new Error("User ID is not set.");
@@ -98,6 +100,18 @@ async function sendMessageToModel(userMessage) {
 export async function sendMessageToAI(userMessage) {
   try {
     console.log("Initiating sendMessageToAI with userMessage:", userMessage);
+
+    // Ensure the userId is initialized before proceeding
+    if (!chatState.userId) {
+      console.log("Re-initializing userId as it's not set.");
+      await initializeUserId();
+      chatState.userId = getUserId();
+
+      if (!chatState.userId) {
+        throw new Error("User ID is still not set after reinitialization.");
+      }
+    }
+
     const aiResponse = await sendMessageToModel(userMessage);
     console.log("AI response from sendMessageToAI:", aiResponse);
     return aiResponse;
