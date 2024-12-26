@@ -1,4 +1,4 @@
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
@@ -8,19 +8,43 @@ const chatState = {
   messages: [], // Holds conversation context
 };
 
-// Initialize chat with the first AI context
-export function initializeChat(aiResponseContext, userId) {
-  if (chatState.messages.length === 0) {
-    // Set up system role with initial context
-    chatState.messages.push({
-      role: "system",
-      content: aiResponseContext || 
-        "You are a helpful assistant that provides insightful suggestions based on user prompts.",
+// Helper: Fetch and set the userId
+async function fetchUserId() {
+  const auth = getAuth();
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        resolve(user.uid); // Resolve with the user ID
+      } else {
+        reject("User is not logged in.");
+      }
     });
+  });
+}
+
+// Initialize chat with the first AI context
+export async function initializeChat(aiResponseContext) {
+  try {
+    // Fetch and set userId
+    if (!chatState.userId) {
+      chatState.userId = await fetchUserId();
+      console.log("User ID set:", chatState.userId);
+    }
+
+    // Set up system role with initial context if not already set
+    if (chatState.messages.length === 0) {
+      chatState.messages.push({
+        role: "system",
+        content: aiResponseContext || 
+          "You are a helpful assistant that provides insightful suggestions based on user prompts.",
+      });
+    }
+
+    console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
+  } catch (error) {
+    console.error("Error initializing chat:", error);
+    throw error; // Propagate error to ensure issues are handled upstream
   }
-  // Set the userId
-  chatState.userId = userId;
-  console.log("Chat initialized with context:", JSON.stringify(chatState.messages, null, 2));
 }
 
 // Helper: Send a message to the AI
@@ -70,4 +94,3 @@ export async function sendMessageToAI(userMessage) {
     throw error;
   }
 }
-
