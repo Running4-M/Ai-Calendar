@@ -1,3 +1,5 @@
+import { auth } from '../backend/firebase.js'; // Import auth from firebase.js
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { initializeAuthState, getUserId, isUserLoggedIn } from "../backend/sharedAuthHelper.js"; // Correct import
 
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
