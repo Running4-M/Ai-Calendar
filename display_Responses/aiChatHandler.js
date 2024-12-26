@@ -1,4 +1,5 @@
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
+import { initializeUserId, getUserId } from "../backend/sharedAuthHelper.js"; // Import sharedAuthHelper.js
 
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
@@ -8,27 +9,14 @@ const chatState = {
   messages: [], // Holds conversation context
 };
 
-// Helper: Fetch and set the userId
-async function fetchUserId() {
-  const auth = getAuth();
-  return new Promise((resolve, reject) => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        resolve(user.uid); // Resolve with the user ID
-      } else {
-        reject("User is not logged in.");
-      }
-    });
-  });
-}
-
 // Initialize chat with the first AI context
 export async function initializeChat(aiResponseContext) {
   try {
-    // Fetch and set userId
+    // Initialize userId using sharedAuthHelper.js
     if (!chatState.userId) {
-      console.log("Fetching userId...");
-      chatState.userId = await fetchUserId();
+      console.log("Fetching userId using sharedAuthHelper...");
+      await initializeUserId(); // Fetch and set the userId globally
+      chatState.userId = getUserId(); // Retrieve the fetched userId
       console.log("User ID fetched and set:", chatState.userId);
     }
 
