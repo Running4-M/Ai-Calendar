@@ -31,12 +31,17 @@ function displayError(errorCode) {
 
 // Initialize user count if not set
 async function initializeUserCount() {
-  const docSnapshot = await getDoc(userCountRef);
-  if (!docSnapshot.exists()) {
-    await setDoc(userCountRef, { count: 0 }); // Use setDoc to create the document with the count field
-    console.log("User count initialized to 0.");
-  } else {
-    console.log("User count document already exists.");
+  try {
+    const docSnapshot = await getDoc(userCountRef);
+    if (!docSnapshot.exists()) {
+      console.log("User count document does not exist. Creating...");
+      await setDoc(userCountRef, { count: 0 }); // Use setDoc to create the document with the count field
+      console.log("User count initialized to 0.");
+    } else {
+      console.log("User count document already exists. Count: ", docSnapshot.data().count);
+    }
+  } catch (error) {
+    console.error("Error checking user count document: ", error);
   }
 }
 
