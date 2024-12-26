@@ -15,7 +15,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 
 const auth = getAuth();
-const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers
+const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers (userCount collection with lowercase 'u')
 
 // Utility: Display error messages
 function displayError(errorCode) {
