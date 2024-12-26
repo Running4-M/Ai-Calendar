@@ -15,7 +15,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 
 const auth = getAuth();
-const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers (userCount collection with lowercase 'u')
+const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers
 
 // Utility: Display error messages
 function displayError(errorCode) {
@@ -33,10 +33,8 @@ function displayError(errorCode) {
 async function initializeUserCount() {
   const docSnapshot = await getDoc(userCountRef);
   if (!docSnapshot.exists()) {
-    await setDoc(userCountRef, { totalUsers: 0 }); // Use setDoc to create the document if it doesn't exist
+    await setDoc(userCountRef, { userCount: 0 }); // Use setDoc to create the document with the userCount field
     console.log("User count initialized to 0.");
-  } else {
-    console.log("User count already initialized.");
   }
 }
 
@@ -53,11 +51,10 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   try {
     // Check the current user count
     const docSnapshot = await getDoc(userCountRef);
-    const totalUsers = docSnapshot.exists() ? docSnapshot.data().totalUsers : 0;
-    console.log("Current totalUsers:", totalUsers); // Log current totalUsers
+    const userCount = docSnapshot.exists() ? docSnapshot.data().userCount : 0;
 
     // Restrict signup if the user count exceeds the limit
-    if (totalUsers >= 2) {
+    if (userCount >= 2) {
       alert("Signup limit reached. No more users can register at this time.");
       return;
     }
@@ -74,13 +71,8 @@ document.getElementById("signupButton").addEventListener("click", async () => {
 
     // Increment the user count in Firestore
     await updateDoc(userCountRef, {
-      totalUsers: totalUsers + 1,
+      userCount: userCount + 1, // Increment the userCount field
     });
-
-    // Check if the updateDoc worked by retrieving the value again
-    const updatedDocSnapshot = await getDoc(userCountRef);
-    const updatedTotalUsers = updatedDocSnapshot.exists() ? updatedDocSnapshot.data().totalUsers : 0;
-    console.log("Updated totalUsers:", updatedTotalUsers); // Log updated totalUsers
 
     alert("Signup successful. Welcome!");
     window.location.href = "../Calendar/calendarMain.html"; // Redirect to Calendar page
