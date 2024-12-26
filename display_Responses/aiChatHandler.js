@@ -1,4 +1,4 @@
-import { initializeAuthState, getUserId, isUserLoggedIn } from "../backend/sharedAuthHelper.js"; // Import sharedAuthHelper.js
+import { initializeAuthState, getUserId, isUserLoggedIn } from "../backend/sharedAuthHelper.js"; // Correct import
 
 const endpoint = "https://calendar-ai-backend.onrender.com/api/chat"; // Chat API endpoint
 
@@ -16,7 +16,7 @@ export async function initializeChat(aiResponseContext) {
     // Ensure userId is initialized
     if (!chatState.userId) {
       console.log("Fetching userId using sharedAuthHelper...");
-      await initializeAuthState(); // Fetch and set the userId globally
+      await initializeAuthState(); // Corrected function name
       chatState.userId = getUserId(); // Retrieve the fetched userId
       console.log("User ID fetched and set:", chatState.userId);
     }
@@ -115,4 +115,3 @@ export async function sendMessageToAI(userMessage) {
     throw error;
   }
 }
-
