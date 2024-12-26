@@ -28,14 +28,7 @@ function displayError(errorCode) {
   return errorMessages[errorCode] || "An error occurred. Please try again.";
 }
 
-// Initialize user count if not set
-async function initializeUserCount() {
-  const docSnapshot = await getDoc(userCountRef);
-  if (!docSnapshot.exists()) {
-    await updateDoc(userCountRef, { totalUsers: 0 });
-    console.log("User count initialized to 0.");
-  }
-}
+
 
 // Handle signup
 document.getElementById("signupButton").addEventListener("click", async () => {
