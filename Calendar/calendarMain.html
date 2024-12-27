@@ -8,24 +8,24 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   </head>
   <style>
-#completionPopup {
-  animation: fadeInOut 3s ease-in-out;
-}
+     #completeTask {
+    background-color: #4CAF50; /* Pretty green */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Some padding for better size */
+    text-align: center; /* Center text */
+    text-decoration: none; /* No underlining */
+    display: inline-block; /* Align as inline */
+    font-size: 16px; /* Font size */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth color change on hover */
+  }
 
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
+  #completeTask:hover {
+    background-color: #45a049; /* Darker green when hovering */
   }
-  20%, 80% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
+
 
   .user-menu {
   position: absolute;
