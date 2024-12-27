@@ -199,6 +199,62 @@ overlay.addEventListener("click", () => {
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
+// Show the popup asking about task completion
+function showTaskPopup() {
+  const taskPopup = document.getElementById('taskPopup');
+  const completeButton = document.getElementById('completeTaskButton');
+  const rescheduleButton = document.getElementById('rescheduleTaskButton');
+  const askForHelpButton = document.getElementById('askForHelpButton');
+  const popupQuestion = document.getElementById('popupQuestion');
+  const complimentText = document.getElementById('complimentText');
 
+  // Display the popup with the task completion question
+  taskPopup.style.display = 'block';
+  popupQuestion.innerText = "Have you completed today's task?";
+
+  // Handle 'Complete Task' button click
+  completeButton.onclick = function() {
+    const quotes = [
+      "Well done! Keep going, you're doing great!",
+      "Success is the sum of small efforts, repeated day in and day out.",
+      "The way to get started is to quit talking and begin doing.",
+      "Believe in yourself! Every accomplishment starts with the decision to try."
+    ];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]; // Random quote from the list
+    popupQuestion.innerText = "Great job!";
+    complimentText.innerText = randomQuote;
+  };
+
+  // Handle 'Reschedule Task' button click
+  rescheduleButton.onclick = function() {
+    popupQuestion.innerText = "You can reschedule the task for a later time.";
+    complimentText.innerText = "Don't forget to update your event in the calendar if you haven't already!";
+  };
+
+  // Handle 'Ask for Help' button click
+  askForHelpButton.onclick = function() {
+    popupQuestion.innerText = "You haven't completed your task yet. Please go to your tasks and click 'Start Chat' to get help.";
+    complimentText.innerText = ""; // No compliment if they haven't completed the task
+    // Redirect to the responses page (make sure the event ID or title is passed in the URL if needed)
+    window.location.href = '/responses.html'; // You can modify this URL if necessary to pass context
+  };
+}
+
+// Close the popup (optional: could be called after a button click or other action)
+function closePopup() {
+  const taskPopup = document.getElementById('taskPopup');
+  taskPopup.style.display = 'none';
+}
+
+// Show the popup after a delay or on page load
+window.addEventListener('load', () => {
+  const now = new Date();
+  const currentTime = now.getHours(); // Get the current hour
+  
+  // Set a delay to show the popup after a few hours (e.g., after 12 PM or next day)
+  if (currentTime >= 12) {
+    showTaskPopup(); // Show the task completion popup
+  }
+});
   
 });
