@@ -2,22 +2,37 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebas
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
+// Function to fetch Firebase config from the backend
+async function getFirebaseConfig() {
+  const response = await fetch('/api/firebaseConfig');
+  const firebaseConfig = await response.json();
+  return firebaseConfig;
+}
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC9MoRFgajbAt58_s2zuW6vW6QKzpzUIbc",
-  authDomain: "ai-calendar-5753a.firebaseapp.com",
-  projectId: "ai-calendar-5753a",
-  storageBucket: "ai-calendar-5753a.firebasestorage.app",
-  messagingSenderId: "610949624500",
-  appId: "1:610949624500:web:b63a91859c298bb0e7dde1",
-  measurementId: "G-8JTTER2Z6T"
-};
+// Initialize Firebase and Firestore with dynamic config
+async function initializeFirebase() {
+  try {
+    const firebaseConfig = await getFirebaseConfig(); // Fetch config from the backend
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-// Initialize Firebase and Firestore
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    // Firebase initialization is successful, now you can proceed with other logic
+    return { db, auth };
+  } catch (error) {
+    console.error("Error initializing Firebase:", error);
+    throw error;
+  }
+}
+
+// Initialize Firebase (returning db and auth for later use)
+let db, auth;
+initializeFirebase().then((firebaseApp) => {
+  db = firebaseApp.db;
+  auth = firebaseApp.auth;
+}).catch((error) => {
+  console.error("Error initializing Firebase:", error);
+});
 
 // Function to get the current user's ID
 function getCurrentUserId() {
