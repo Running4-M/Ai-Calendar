@@ -149,4 +149,4 @@ async function getResponsesByDateAndTitle(date, title) {
   return null; // No response found
 }
 
-export { fetchEvents, saveEvent, fetchEventsForToday, saveResponse, getResponsesByDateAndTitle,auth };
+export { fetchEvents, saveEvent, fetchEventsForToday, saveResponse, getResponsesByDateAndTitle };
