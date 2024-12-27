@@ -188,16 +188,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function checkTaskCompletionStatus(userId) {
-      // Check the user's task completion status for the first day
-      const userDoc = await fetchUserTaskStatus(userId); // Replace with your actual fetch function
+      // Fetch events for the user and check task completion status
+      const events = await fetchEvents(userId); // Use fetchEvents here
 
-      if (!userDoc) {
-        return { firstDayShown: false, completedTasks: 0 };
-      }
+      const completedTasks = events.filter(event => event.completed).length;
 
       return {
-        firstDayShown: userDoc.firstDayShown || false,
-        completedTasks: userDoc.completedTasks || 0,
+        firstDayShown: completedTasks > 0, // Set based on the tasks
+        completedTasks: completedTasks || 0,
       };
     }
 
