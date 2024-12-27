@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Function to fetch Firebase config from the full URL
@@ -25,23 +25,27 @@ async function initializeFirebase() {
   }
 }
 
-// Initialize Firebase (returning db and auth for later use)
+// Declare db and auth globally, but assign them after initialization
 let db, auth;
 initializeFirebase().then((firebaseApp) => {
   db = firebaseApp.db;
   auth = firebaseApp.auth;
+
+  // Now that Firebase is initialized, you can proceed with your logic
+  console.log("Firebase initialized successfully.");
 }).catch((error) => {
   console.error("Error initializing Firebase:", error);
 });
 
-// Function to get the current user's ID
+// Function to get the current user's ID (ensure Firebase is initialized first)
 function getCurrentUserId() {
-  const user = auth.currentUser;
-  if (!user) {
-    throw new Error("User is not logged in.");
+  if (!auth || !auth.currentUser) {
+    throw new Error("Firebase is not initialized or user is not logged in.");
   }
+  const user = auth.currentUser;
   return user.uid;
 }
+
 
 // Function to fetch events
 async function fetchEvents() {
