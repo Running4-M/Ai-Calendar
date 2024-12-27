@@ -8,8 +8,7 @@ let selectedEvent = null;
 document.addEventListener("DOMContentLoaded", async () => {
   const calendarEl = document.getElementById("calendar");
   const deleteButton = document.getElementById("deleteEvent"); // Ensure this ID matches your delete button
-
-  // Initialize Firebase Authentication
+  const taskCompletionBar = document.getElementById("taskCompletionBar"); // The bar element to show task progress
   const auth = getAuth();
   let userId = null;
 
@@ -180,6 +179,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error processing AI responses: ", error.message);
     }
+
+    // New task completion bar logic
+    const taskCompletionStatus = await checkTaskCompletionStatus(userId);
+
+    if (!taskCompletionStatus.firstDayShown) {
+      showCompletionBar();
+    }
+
+    async function checkTaskCompletionStatus(userId) {
+      // Check the user's task completion status for the first day
+      const userDoc = await fetchUserTaskStatus(userId); // Replace with your actual fetch function
+
+      if (!userDoc) {
+        return { firstDayShown: false, completedTasks: 0 };
+      }
+
+      return {
+        firstDayShown: userDoc.firstDayShown || false,
+        completedTasks: userDoc.completedTasks || 0,
+      };
+    }
+
+    function showCompletionBar() {
+      taskCompletionBar.style.display = "block"; // Show the bar
+      taskCompletionBar.innerHTML = `<div>Complete 7 tasks to get a reward!</div><div class="progress" style="width: 0%;"></div>`;
+      updateCompletionProgress(0); // Initially set progress to 0%
+
+      // Add logic for tracking task completion here
+      const totalTasks = 7; // Tasks over the next 7 days
+
+      // Update completion based on the number of completed tasks
+      const progress = (taskCompletionStatus.completedTasks / totalTasks) * 100;
+      updateCompletionProgress(progress);
+    }
+
+    function updateCompletionProgress(progress) {
+      const progressBar = taskCompletionBar.querySelector(".progress");
+      progressBar.style.width = `${progress}%`;
+    }
   });
 
   const chatgptResponsesButton = document.getElementById("chatgptResponsesButton");
@@ -207,38 +245,37 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Failed to log out. Please try again.");
     }
   });
+
   const menuButton = document.getElementById("menuButton");
-const sidebar = document.getElementById("sidebar");
-const closeSidebar = document.getElementById("closeSidebar");
-const overlay = document.getElementById("overlay");
-const userIcon = document.querySelector(".user-icon"); // Select the user icon
-const helpButton = document.getElementById("helpButton"); // Select the help button
+  const sidebar = document.getElementById("sidebar");
+  const closeSidebar = document.getElementById("closeSidebar");
+  const overlay = document.getElementById("overlay");
+  const userIcon = document.querySelector(".user-icon"); // Select the user icon
+  const helpButton = document.getElementById("helpButton"); // Select the help button
 
-// Open the sidebar
-menuButton.addEventListener("click", () => {
-  sidebar.classList.add("open");
-  overlay.classList.add("visible");
-  userIcon.classList.add("hidden"); // Hide the user icon
-});
+  // Open the sidebar
+  menuButton.addEventListener("click", () => {
+    sidebar.classList.add("open");
+    overlay.classList.add("visible");
+    userIcon.classList.add("hidden"); // Hide the user icon
+  });
 
-// Close the sidebar
-closeSidebar.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
-});
+  // Close the sidebar
+  closeSidebar.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("visible");
+    userIcon.classList.remove("hidden"); // Show the user icon
+  });
 
-// Close the sidebar when clicking the overlay
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
-});
+  // Close the sidebar when clicking the overlay
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("visible");
+    userIcon.classList.remove("hidden"); // Show the user icon
+  });
 
-// Redirect to the help page when the help button is clicked
-helpButton.addEventListener("click", () => {
-  window.location.href = "../help/help.html"; // Redirect to the help page
-});
-
-  
+  // Redirect to the help page when the help button is clicked
+  helpButton.addEventListener("click", () => {
+    window.location.href = "../help/help.html"; // Redirect to the help page
+  });
 });
