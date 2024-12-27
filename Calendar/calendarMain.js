@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error("User not authenticated.");
           }
 
-          const events = await fetchEvents(); // You no longer need to pass userId, as it's handled inside fetchEvents
+          const events = await fetchEvents(userId); // Fetch events by user ID
           successCallback(events);
         } catch (error) {
           console.error("Error fetching events: ", error.message);
