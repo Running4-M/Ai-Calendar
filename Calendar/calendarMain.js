@@ -234,6 +234,7 @@ function showTaskPopup() {
     complimentText.innerText =
       "Great job! Here's some motivation: 'Success is not final, failure is not fatal: it is the courage to continue that counts.'";
     popupButtons.style.display = 'none';
+    popupDate.style.display = 'none'; // Hide the question
     setTimeout(() => {
       taskPopup.style.display = 'none';
     }, 2000);
@@ -244,6 +245,7 @@ function showTaskPopup() {
     complimentText.innerText =
       'Friendly reminder: please update the event in the calendar if you have not already!';
     popupButtons.style.display = 'none';
+    popupDate.style.display = 'none'; // Hide the question
     setTimeout(() => {
       taskPopup.style.display = 'none';
     }, 2000);
@@ -251,7 +253,9 @@ function showTaskPopup() {
 
   // Handle "No, I need help" button
   askForHelpButton.onclick = function () {
+    // Hide the initial buttons and show the secondary buttons
     popupButtons.style.display = 'none';
+    popupDate.style.display = 'none'; // Hide the question
     secondaryButtons.style.display = 'flex';
     helpDescription.style.display = 'block';
   };
