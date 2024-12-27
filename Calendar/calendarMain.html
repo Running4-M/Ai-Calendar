@@ -364,67 +364,68 @@
 
     <div id="calendar" style="max-width: 900px; margin: 40px auto;"></div>
 
-    <!-- Modal -->
+<!-- Modal -->
+<div id="eventModal" class="modal">
+  <div id="modalContent" class="modal-content">
+    <h3>Hi! Let’s set up your task 👋</h3>
 
-    <div id="eventModal">
-      <div id="modalContent">
-        <h3>Hi! Let’s set up your task 👋</h3>
+    <!-- Question 1 -->
+    <p>What would you like to do?</p>
+    <input type="text" id="eventTitle" placeholder="E.g., Write about animals" />
+    <input type="text" id="eventDate" disabled placeholder="Event Date" />
 
-        <!-- Question 1 -->
-        <p>What would you like to do?</p>
-        <input type="text" id="eventTitle" placeholder="E.g., Write about animals" />
-        <input type="text" id="eventDate" disabled placeholder="Event Date" />
+    <!-- Question 2 -->
+    <p>How can I help with this task?</p>
+    <select id="aiType">
+      <!-- Content Creation Category -->
+      <optgroup label="Content Creation">
+        <option value="brainstorm">Brainstorm Ideas</option>
+        <option value="outline">Create an Outline</option>
+        <option value="list">Generate a List</option>
+        <option value="create-content">Create Content (Articles, Blog Posts, Social Media)</option>
+        <option value="product-description">Generate Product Description</option>
+      </optgroup>
 
-        <!-- Question 2 -->
-        <p>How can I help with this task?</p>
-        <select id="aiType">
-          <!-- Content Creation Category -->
-          <optgroup label="Content Creation">
-              <option value="brainstorm">Brainstorm Ideas</option>
-              <option value="outline">Create an Outline</option>
-              <option value="list">Generate a List</option>
-              <option value="create-content">Create Content (Articles, Blog Posts, Social Media)</option>
-              <option value="product-description">Generate Product Description</option>
-          </optgroup>
+      <!-- Writing Category -->
+      <optgroup label="Writing">
+        <option value="summary">Summarize Information</option>
+        <option value="rewrite">Rewrite Text (Paraphrasing)</option>
+        <option value="email-draft">Email Draft</option>
+        <option value="creative-writing">Creative Writing (Stories, Poems)</option>
+      </optgroup>
 
-          <!-- Writing Category -->
-          <optgroup label="Writing">
-              <option value="summary">Summarize Information</option>
-              <option value="rewrite">Rewrite Text (Paraphrasing)</option>
-              <option value="email-draft">Email Draft</option>
-              <option value="creative-writing">Creative Writing (Stories, Poems)</option>
-          </optgroup>
+      <!-- Research Category -->
+      <optgroup label="Research">
+        <option value="research">Conduct Research (Summarize Information)</option>
+        <option value="learning-help">Learning Help (Explanations)</option>
+      </optgroup>
 
-          <!-- Research Category -->
-          <optgroup label="Research">
-              <option value="research">Conduct Research (Summarize Information)</option>
-              <option value="learning-help">Learning Help (Explanations)</option>
-          </optgroup>
+      <!-- Miscellaneous Category -->
+      <optgroup label="Miscellaneous">
+        <option value="answer-questions">Answer Questions</option>
+        <option value="translation">Translation</option>
+        <option value="other">Other</option>
+      </optgroup>
+    </select>
 
-          
-          
+    <!-- Question 3 -->
+    <p>Any specific details or focus areas I should know about?</p>
+    <textarea id="taskDetails" placeholder="E.g., Focus on nocturnal animals and their diet."></textarea>
 
-          <!-- Miscellaneous Category -->
-          <optgroup label="Miscellaneous">
-              <option value="answer-questions">Answer Questions</option>
-              <option value="translation">Translation</option>
-              <option value="other">Other</option>
-          </optgroup>
-      </select>
+    <!-- Buttons -->
+    <button id="saveEvent" type="button">Save</button>
+    <button id="deleteEvent" type="button" style="display: none;">Delete</button>
+    <button id="markAsCompleted" type="button" style="display: none;">Task Completed</button>
 
-        <!-- Question 3 -->
-        <p>Any specific details or focus areas I should know about?</p>
-        <textarea id="taskDetails" placeholder="E.g., Focus on nocturnal animals and their diet."></textarea>
-
-        <button id="saveEvent">Save</button>
-        <button id="deleteEvent" style="display: none;">Delete</button>
-        <button id="markAsCompleted" style="display: none;">Task Completed</button>
-<div id="completionPopup" style="display: none; background-color: #d4edda; color: #155724; padding: 10px; position: fixed; bottom: 20px; right: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-  🎉 Well done! Keep it up! 🎉
-</div>
-        <button id="closeModal">Cancel</button>
-      </div>
+    <!-- Completion Popup -->
+    <div id="completionPopup" style="display: none; background-color: #d4edda; color: #155724; padding: 10px; position: fixed; bottom: 20px; right: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+      🎉 Well done! Keep it up! 🎉
     </div>
+
+    <button id="closeModal" type="button">Cancel</button>
+  </div>
+</div>
+
 
     <button id="chatgptResponsesButton">Calendar AI Responses</button>
 
