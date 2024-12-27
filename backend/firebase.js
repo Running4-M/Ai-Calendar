@@ -53,6 +53,7 @@ async function fetchEvents() {
 async function saveEvent(eventData) {
   try {
     const userId = getCurrentUserId(); // Get the logged-in user's ID
+    console.log("Saving event for userId:", userId); // Debugging line
     const eventsCollectionRef = collection(db, "events");
     const docRef = await addDoc(eventsCollectionRef, {
       ...eventData,
