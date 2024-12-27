@@ -8,6 +8,32 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   </head>
   <style>
+    #taskProgressContainer {
+  margin-top: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+#taskProgressBar {
+  width: 0%;
+  height: 25px;
+  background-color: #4CAF50;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: width 0.5s ease-in-out; /* Smooth transition for progress */
+}
+
+#taskProgressText {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #555;
+  font-weight: bold;
+}
+
+#taskProgressText span {
+  font-size: 18px;
+  color: #4CAF50;
+}
   .user-menu {
   position: absolute;
   top: 10px;
@@ -403,6 +429,11 @@
     </div>
 
     <button id="chatgptResponsesButton">Calendar AI Responses</button>
+
+    <div id="taskProgressContainer" style="margin-top: 20px;">
+  <div id="taskProgressBar"></div>
+  <p id="taskProgressText">You’ve added events for 0 out of 7 days!</p>
+</div>
 
     <script src="calendarMain.js" type="module"></script>
     <script src="../backend/firebase.js" type="module"></script>
