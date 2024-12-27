@@ -236,7 +236,7 @@ function showTaskPopup() {
     popupQuestion.innerText = "You haven't completed your task yet. Please go to your tasks and click 'Start Chat' to get help.";
     complimentText.innerText = ""; // No compliment if they haven't completed the task
     // Redirect to the responses page (make sure the event ID or title is passed in the URL if needed)
-    window.location.href = '/responses.html'; // You can modify this URL if necessary to pass context
+    window.location.href = '../display_Responses/chatgpt_Response.html'; // You can modify this URL if necessary to pass context
   };
 }
 
