@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   </head>
   <style>
- /* Style for the Task Completion Popup */
+/* Popup Styles */
 .task-popup {
   position: fixed;
   top: 0;
@@ -25,11 +25,18 @@
 .popup-content {
   background: #ffffff;
   border-radius: 15px;
-  padding: 30px 20px;
+  padding: 30px;
   width: 90%;
   max-width: 500px;
   text-align: center;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.popup-date {
+  font-size: 1.2em;
+  color: #555555;
+  margin-bottom: 15px;
+  font-weight: bold;
 }
 
 .popup-content p {
@@ -38,16 +45,16 @@
   margin-bottom: 20px;
 }
 
-.compliment-text {
+.popup-description {
   font-size: 1em;
   color: #555555;
-  margin: 10px 0;
+  margin-bottom: 20px;
 }
 
 .popup-buttons {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Space between buttons */
+  gap: 15px;
 }
 
 .popup-button {
@@ -67,30 +74,30 @@
   transform: scale(1.05);
 }
 
-/* Specific button colors */
 .complete-btn {
-  background-color: #4caf50; /* Green */
-}
-
-.complete-btn:hover {
-  background-color: #45a049;
+  background-color: #4caf50;
 }
 
 .reschedule-btn {
-  background-color: #ffc107; /* Yellow */
-}
-
-.reschedule-btn:hover {
-  background-color: #ffb300;
+  background-color: #ffa500; /* Orange */
 }
 
 .help-btn {
   background-color: #f44336; /* Red */
 }
 
-.help-btn:hover {
-  background-color: #e53935;
+.ok-btn {
+  background-color: #4caf50; /* Green */
 }
+
+.later-btn {
+  background-color: #008cba; /* Blue */
+}
+
+.later-btn:hover {
+  background-color: #007bb5;
+}
+
   .user-menu {
   position: absolute;
   top: 10px;
@@ -492,14 +499,24 @@
 <div id="taskPopup" class="task-popup">
   <div class="popup-content">
     <!-- First Message -->
-    <p id="popupQuestion">Have you completed your tasks for the day?</p>
+    <h3 id="popupDate" class="popup-date"></h3>
+    <p id="popupQuestion">Have you completed your tasks for yesterday?</p>
     <div id="complimentText" class="compliment-text"></div>
-    
-    <!-- Buttons -->
-    <div class="popup-buttons">
+
+    <!-- Initial Buttons -->
+    <div id="popupButtons" class="popup-buttons">
       <button id="completeTaskButton" class="popup-button complete-btn">Yes, I completed them!</button>
       <button id="rescheduleTaskButton" class="popup-button reschedule-btn">I rescheduled them</button>
       <button id="askForHelpButton" class="popup-button help-btn">No, I need help</button>
+    </div>
+
+    <!-- Secondary Buttons (Initially Hidden) -->
+    <div id="secondaryButtons" class="popup-buttons" style="display: none;">
+      <p id="helpDescription" class="popup-description">
+        Go to the designated responses page and click on the relevant event to start the chat.
+      </p>
+      <button id="okButton" class="popup-button ok-btn">OK</button>
+      <button id="laterButton" class="popup-button later-btn">I'll do it later</button>
     </div>
   </div>
 </div>
