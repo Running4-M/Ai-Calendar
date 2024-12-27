@@ -2,16 +2,13 @@ import { Timestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-fi
 import { fetchEvents, saveEvent, updateEvent, deleteEvent, fetchEventsForToday, saveResponse, getResponsesByDateAndTitle } from "../backend/firebase.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 import { fetchChatGPTResponse } from "../AI/chatgpt.js"; // Import the AI response function
-
 let selectedEvent = null;
-
 document.addEventListener("DOMContentLoaded", async () => {
   const calendarEl = document.getElementById("calendar");
   const deleteButton = document.getElementById("deleteEvent"); // Ensure this ID matches your delete button
-  const taskCompletionBar = document.getElementById("taskCompletionBar"); // The bar element to show task progress
+  // Initialize Firebase Authentication
   const auth = getAuth();
   let userId = null;
-
   // Check for authentication state
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -23,7 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = "../Login/login.html";
       return;
     }
-
     const calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: "dayGridMonth",
       selectable: true,
@@ -33,32 +29,26 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (!userId) {
             throw new Error("User not authenticated.");
           }
-
-          const events = await fetchEvents(userId); // Fetch events by user ID
+          const events = await fetchEvents(); // You no longer need to pass userId, as it's handled inside fetchEvents
           successCallback(events);
         } catch (error) {
           console.error("Error fetching events: ", error.message);
           failureCallback(error);
         }
       },
-
       // Handle creating new events
       dateClick: function (info) {
         selectedEvent = null;
-
         document.querySelector("#eventTitle").value = "";
         document.querySelector("#eventDate").value = info.dateStr;
         document.querySelector("#aiType").value = "";
         document.querySelector("#taskDetails").value = "";
-
         deleteButton.style.display = "none";
         document.querySelector("#eventModal").style.display = "block";
       },
-
       // Handle event click (edit/delete event)
       eventClick: function (info) {
         const clickedEvent = info.event;
-
         selectedEvent = {
           id: clickedEvent.id,
           title: clickedEvent.title,
@@ -66,20 +56,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           aiType: clickedEvent.extendedProps.aiType,
           description: clickedEvent.extendedProps.description,
         };
-
         document.querySelector("#eventTitle").value = selectedEvent.title;
         document.querySelector("#eventDate").value = selectedEvent.date.toISOString().slice(0, 10);
         document.querySelector("#aiType").value = selectedEvent.aiType || "brainstorm";
         document.querySelector("#taskDetails").value = selectedEvent.description;
-
         deleteButton.style.display = "block";
         document.querySelector("#eventModal").style.display = "block";
       },
-
       // Handle drag-and-drop to update event dates
       eventDrop: async (info) => {
         const droppedEvent = info.event;
-
         try {
           const updatedEvent = {
             title: droppedEvent.title,
@@ -87,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             aiType: droppedEvent.extendedProps.aiType || "brainstorm",
             description: droppedEvent.extendedProps.description || "",
           };
-
           await updateEvent(droppedEvent.id, updatedEvent);
           alert("Event updated successfully after drag-and-drop!");
         } catch (error) {
@@ -97,18 +82,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       },
     });
-
     calendar.render();
-
     // Save button functionality
     document.querySelector("#saveEvent").addEventListener("click", async () => {
       const title = document.querySelector("#eventTitle").value;
       const date = document.querySelector("#eventDate").value;
       const aiType = document.querySelector("#aiType").value;
       const description = document.querySelector("#taskDetails").value;
-
       const eventData = { title, date, aiType, description, userId }; // Include userId
-
       try {
         if (selectedEvent && selectedEvent.id) {
           await updateEvent(selectedEvent.id, eventData);
@@ -117,28 +98,23 @@ document.addEventListener("DOMContentLoaded", async () => {
           await saveEvent(eventData);
           alert("Event added successfully!");
         }
-
         const events = await fetchEvents(userId); // Fetch events by user ID
         calendar.removeAllEvents();
         calendar.addEventSource(events);
-
         document.querySelector("#eventModal").style.display = "none";
       } catch (error) {
         console.error("Error saving event: ", error.message);
         alert("Failed to save event. Please try again.");
       }
     });
-
     // Delete button functionality
     deleteButton.addEventListener("click", async () => {
       if (!selectedEvent || !selectedEvent.id) return;
-
       const confirmDelete = confirm("Are you sure you want to delete this event?");
       if (confirmDelete) {
         try {
           await deleteEvent(selectedEvent.id);
           calendar.getEventById(selectedEvent.id).remove();
-
           document.querySelector("#eventModal").style.display = "none";
           alert("Event deleted successfully!");
         } catch (error) {
@@ -147,31 +123,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
     });
-
     document.querySelector("#closeModal").addEventListener("click", () => {
       document.querySelector("#eventModal").style.display = "none";
     });
-
     // Process AI Responses for today's events
     const today = new Date().toISOString().slice(0, 10);
-
     try {
       const todaysEvents = await fetchEventsForToday(today, userId); // Pass userId for filtering
-
       for (const event of todaysEvents) {
         const existingResponse = await getResponsesByDateAndTitle(event.date, event.title, userId); // Filter by userId
-
         if (!existingResponse) {
           const prompt = `Task: ${event.title}\nDetails: ${event.description}\nAI Type: ${event.aiType}`;
           const response = await fetchChatGPTResponse(prompt);
-
           await saveResponse({
             date: event.date,
             eventTitle: event.title,
             response: response,
             userId, // Associate response with userId
           });
-
         } else {
           console.log(`Response already exists for event "${event.title}"`);
         }
@@ -179,64 +148,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error processing AI responses: ", error.message);
     }
-
-    // New task completion bar logic
-    const taskCompletionStatus = await checkTaskCompletionStatus(userId);
-
-    if (!taskCompletionStatus.firstDayShown) {
-      showCompletionBar();
-    }
-
-    async function checkTaskCompletionStatus(userId) {
-      // Fetch events for the user and check task completion status
-      const events = await fetchEvents(userId); // Use fetchEvents here
-
-      const completedTasks = events.filter(event => event.completed).length;
-
-      return {
-        firstDayShown: completedTasks > 0, // Set based on the tasks
-        completedTasks: completedTasks || 0,
-      };
-    }
-
-    function showCompletionBar() {
-      taskCompletionBar.style.display = "block"; // Show the bar
-      taskCompletionBar.innerHTML = `<div>Complete 7 tasks to get a reward!</div><div class="progress" style="width: 0%;"></div><div id="taskProgressText">0/7</div>`;
-      updateCompletionProgress(0); // Initially set progress to 0%
-
-      // Add logic for tracking task completion here
-      const totalTasks = 7; // Tasks over the next 7 days
-
-      // Update completion based on the number of completed tasks
-      const progress = (taskCompletionStatus.completedTasks / totalTasks) * 100;
-      updateCompletionProgress(progress);
-    }
-
-    function updateCompletionProgress(progress) {
-      const progressBar = taskCompletionBar.querySelector(".progress");
-      progressBar.style.width = `${progress}%`;
-
-      // Update the text showing the task count
-      const taskProgressText = document.getElementById("taskProgressText");
-      const completedTasks = taskCompletionStatus.completedTasks;
-      taskProgressText.textContent = `${completedTasks}/7`;
-    }
   });
-
   const chatgptResponsesButton = document.getElementById("chatgptResponsesButton");
-
   // Add click event listener to the button
   chatgptResponsesButton.addEventListener("click", () => {
     // Redirect to chatgpt_Responses.html
     window.location.href = "../display_Responses/chatgpt_Response.html";
   });
-
   // Toggle menu visibility
   document.getElementById("menuButton").addEventListener("click", () => {
     const menuOptions = document.getElementById("menuOptions");
     menuOptions.style.display = menuOptions.style.display === "none" ? "block" : "none";
   });
-
   // Handle logout
   document.getElementById("logoutButton").addEventListener("click", async () => {
     try {
@@ -248,38 +171,33 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Failed to log out. Please try again.");
     }
   });
-
   const menuButton = document.getElementById("menuButton");
-  const sidebar = document.getElementById("sidebar");
-  const closeSidebar = document.getElementById("closeSidebar");
-  const overlay = document.getElementById("overlay");
-  const userIcon = document.querySelector(".user-icon"); // Select the user icon
-  const helpButton = document.getElementById("helpButton"); // Select the help button
-
-  // Open the sidebar
-  menuButton.addEventListener("click", () => {
-    sidebar.classList.add("open");
-    overlay.classList.add("visible");
-    userIcon.classList.add("hidden"); // Hide the user icon
-  });
-
-  // Close the sidebar
-  closeSidebar.addEventListener("click", () => {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("visible");
-    userIcon.classList.remove("hidden"); // Show the user icon
-  });
-
-  // Close the sidebar when clicking the overlay
-  overlay.addEventListener("click", () => {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("visible");
-    userIcon.classList.remove("hidden"); // Show the user icon
-  });
-
-  // Redirect to the help page when the help button is clicked
-  helpButton.addEventListener("click", () => {
-    window.location.href = "../help/help.html"; // Redirect to the help page
-  });
+const sidebar = document.getElementById("sidebar");
+const closeSidebar = document.getElementById("closeSidebar");
+const overlay = document.getElementById("overlay");
+const userIcon = document.querySelector(".user-icon"); // Select the user icon
+const helpButton = document.getElementById("helpButton"); // Select the help button
+// Open the sidebar
+menuButton.addEventListener("click", () => {
+  sidebar.classList.add("open");
+  overlay.classList.add("visible");
+  userIcon.classList.add("hidden"); // Hide the user icon
 });
-
+// Close the sidebar
+closeSidebar.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("visible");
+  userIcon.classList.remove("hidden"); // Show the user icon
+});
+// Close the sidebar when clicking the overlay
+overlay.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("visible");
+  userIcon.classList.remove("hidden"); // Show the user icon
+});
+// Redirect to the help page when the help button is clicked
+helpButton.addEventListener("click", () => {
+  window.location.href = "../help/help.html"; // Redirect to the help page
+});
+  
+});
