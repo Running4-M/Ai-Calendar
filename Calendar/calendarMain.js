@@ -172,18 +172,78 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelector("#eventModal").style.display = "none";
     });
 
-    // Handle logout
-    document.getElementById("logoutButton").addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        alert("You have been logged out.");
-        window.location.href = "../Login/login.html";
-      } catch (error) {
-        console.error("Logout error:", error);
-        alert("Failed to log out. Please try again.");
+     // Process AI Responses for today's events
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      const todaysEvents = await fetchEventsForToday(today, userId); // Pass userId for filtering
+      for (const event of todaysEvents) {
+        const existingResponse = await getResponsesByDateAndTitle(event.date, event.title, userId); // Filter by userId
+        if (!existingResponse) {
+          const prompt = `Task: ${event.title}\nDetails: ${event.description}\nAI Type: ${event.aiType}`;
+          const response = await fetchChatGPTResponse(prompt);
+          await saveResponse({
+            date: event.date,
+            eventTitle: event.title,
+            response: response,
+            userId, // Associate response with userId
+          });
+        } else {
+          console.log(`Response already exists for event "${event.title}"`);
+        }
       }
-    });
+    } catch (error) {
+      console.error("Error processing AI responses: ", error.message);
+    }
   });
-
+  const chatgptResponsesButton = document.getElementById("chatgptResponsesButton");
+  // Add click event listener to the button
+  chatgptResponsesButton.addEventListener("click", () => {
+    // Redirect to chatgpt_Responses.html
+    window.location.href = "../display_Responses/chatgpt_Response.html";
+  });
+  // Toggle menu visibility
+  document.getElementById("menuButton").addEventListener("click", () => {
+    const menuOptions = document.getElementById("menuOptions");
+    menuOptions.style.display = menuOptions.style.display === "none" ? "block" : "none";
+  });
+  // Handle logout
+  document.getElementById("logoutButton").addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      alert("You have been logged out.");
+      window.location.href = "../Login/login.html"; // Redirect to login page
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Failed to log out. Please try again.");
+    }
+  });
+  const menuButton = document.getElementById("menuButton");
+const sidebar = document.getElementById("sidebar");
+const closeSidebar = document.getElementById("closeSidebar");
+const overlay = document.getElementById("overlay");
+const userIcon = document.querySelector(".user-icon"); // Select the user icon
+const helpButton = document.getElementById("helpButton"); // Select the help button
+// Open the sidebar
+menuButton.addEventListener("click", () => {
+  sidebar.classList.add("open");
+  overlay.classList.add("visible");
+  userIcon.classList.add("hidden"); // Hide the user icon
 });
-
+// Close the sidebar
+closeSidebar.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("visible");
+  userIcon.classList.remove("hidden"); // Show the user icon
+});
+// Close the sidebar when clicking the overlay
+overlay.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  overlay.classList.remove("visible");
+  userIcon.classList.remove("hidden"); // Show the user icon
+});
+// Redirect to the help page when the help button is clicked
+helpButton.addEventListener("click", () => {
+  window.location.href = "../help/help.html"; // Redirect to the help page
+});
+  
+});
