@@ -430,9 +430,12 @@
 
     <button id="chatgptResponsesButton">Calendar AI Responses</button>
 
-    <div id="taskProgressContainer" style="margin-top: 20px;">
-  <div id="taskProgressBar"></div>
-  <p id="taskProgressText">You’ve added events for 0 out of 7 days!</p>
+    <div id="taskCompletionBar" style="display: none; margin-top: 20px;">
+  <div id="taskProgressContainer">
+    <p id="taskProgressText">Complete 7 tasks to get a reward!</p>
+    <div id="taskProgressBar" style="width: 0%; height: 20px; background-color: #4caf50; border-radius: 5px;"></div>
+  </div>
+  <p id="completionStatusText">You’ve added events for 0 out of 7 days!</p>
 </div>
 
     <script src="calendarMain.js" type="module"></script>
