@@ -47,22 +47,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector("#eventModal").style.display = "block";
       },
       // Handle event click (edit/delete event)
-      eventClick: function (info) {
-        const clickedEvent = info.event;
-        selectedEvent = {
-          id: clickedEvent.id,
-          title: clickedEvent.title,
-          date: clickedEvent.start,
-          aiType: clickedEvent.extendedProps.aiType,
-          description: clickedEvent.extendedProps.description,
-        };
-        document.querySelector("#eventTitle").value = selectedEvent.title;
-        document.querySelector("#eventDate").value = selectedEvent.date.toISOString().slice(0, 10);
-        document.querySelector("#aiType").value = selectedEvent.aiType || "brainstorm";
-        document.querySelector("#taskDetails").value = selectedEvent.description;
-        deleteButton.style.display = "block";
-        document.querySelector("#eventModal").style.display = "block";
-      },
+     eventClick: function (info) {
+  const clickedEvent = info.event;
+  selectedEvent = {
+    id: clickedEvent.id,
+    title: clickedEvent.title,
+    date: clickedEvent.start,
+    aiType: clickedEvent.extendedProps.aiType,
+    description: clickedEvent.extendedProps.description,
+  };
+  document.querySelector("#eventTitle").value = selectedEvent.title;
+  document.querySelector("#eventDate").value = selectedEvent.date.toISOString().slice(0, 10);
+  document.querySelector("#aiType").value = selectedEvent.aiType || "brainstorm";
+  document.querySelector("#taskDetails").value = selectedEvent.description;
+  deleteButton.style.display = "block";
+  document.querySelector("#markAsCompleted").style.display = "block"; // Show "Task Completed" button
+  document.querySelector("#eventModal").style.display = "block";
+},
       // Handle drag-and-drop to update event dates
       eventDrop: async (info) => {
         const droppedEvent = info.event;
@@ -198,6 +199,26 @@ overlay.addEventListener("click", () => {
 // Redirect to the help page when the help button is clicked
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
+});
+  document.querySelector("#markAsCompleted").addEventListener("click", async () => {
+  if (!selectedEvent || !selectedEvent.id) return;
+
+  try {
+    await deleteEvent(selectedEvent.id); // Reuse your delete function
+    calendar.getEventById(selectedEvent.id).remove(); // Remove event from calendar
+
+    // Show motivational popup
+    const popup = document.getElementById("completionPopup");
+    popup.style.display = "block";
+    setTimeout(() => {
+      popup.style.display = "none";
+    }, 3000); // Hide popup after 3 seconds
+
+    document.querySelector("#eventModal").style.display = "none"; // Close modal
+  } catch (error) {
+    console.error("Error completing task: ", error.message);
+    alert("Failed to mark task as completed. Please try again.");
+  }
 });
   
 });
