@@ -2,9 +2,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebas
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-// Function to fetch Firebase config from the backend
+// Function to fetch Firebase config from the full URL
 async function getFirebaseConfig() {
-  const response = await fetch('/api/firebaseConfig');
+  const response = await fetch("https://calendar-ai-backend.onrender.com/api/firebaseConfig");
   const firebaseConfig = await response.json();
   return firebaseConfig;
 }
@@ -195,3 +195,4 @@ async function getResponsesByDateAndTitle(date, title) {
 }
 
 export { fetchEvents, saveEvent, updateEvent, deleteEvent, fetchEventsForToday, saveResponse, db, getResponsesByDateAndTitle, auth };
+
