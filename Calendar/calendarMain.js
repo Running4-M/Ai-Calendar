@@ -199,5 +199,70 @@ overlay.addEventListener("click", () => {
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
+  function showTaskPopup() {
+  const taskPopup = document.getElementById('taskPopup');
+  const currentDate = new Date();
+  const currentHour = currentDate.getHours();
+
+  // Get the user's events for today
+  fetchEventsForToday().then(events => {
+    const taskCompleted = events.some(event => event.completed); // Assume 'completed' is a field in the event
+
+    // Show the popup if there are no completed tasks
+    if (!taskCompleted) {
+      taskPopup.style.display = 'block';
+      // Show the question
+      document.getElementById('popupQuestion').innerText = "Have you completed today's task?";
+
+      // Handle button actions
+      document.getElementById('completeTaskButton').onclick = function() {
+        document.getElementById('popupQuestion').innerText = "Great job! Keep it up!";
+        document.getElementById('complimentText').innerText = "Well done! Here's a motivational quote: 'Success is the sum of small efforts, repeated day in and day out.'";
+      };
+
+      document.getElementById('rescheduleTaskButton').onclick = function() {
+        document.getElementById('popupQuestion').innerText = "You can reschedule the task for a later time.";
+        document.getElementById('complimentText').innerText = "";  // No compliment if they reschedule
+      };
+
+      document.getElementById('askForHelpButton').onclick = function() {
+        document.getElementById('popupQuestion').innerText = "Opening a chat with AI to help you complete the task.";
+        // Redirect to the responses page and automatically open the chat for that event
+        window.location.href = '/responses.html'; // Ensure the event is passed or retrieved correctly to start the chat
+      };
+    }
+  });
+}
+
+// Check events for today and when the popup should show up (e.g., show after 12 PM or the next day)
+function fetchEventsForToday() {
+  return new Promise((resolve, reject) => {
+    const userId = getUserId(); // Make sure to get the logged-in user's ID
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+    // Fetch events for today from Firebase or any backend
+    firebase.firestore().collection('events')
+      .where('userId', '==', userId)
+      .where('date', '==', today)
+      .get()
+      .then(snapshot => {
+        const events = snapshot.docs.map(doc => doc.data());
+        resolve(events);
+      })
+      .catch(err => {
+        console.error('Error fetching events:', err);
+        reject(err);
+      });
+  });
+}
+
+// Get the logged-in user's ID (you may already have this part in place)
+function getUserId() {
+  // Placeholder for actual user ID logic (like Firebase Auth)
+  return 'someUserId'; 
+}
+
+// Trigger the popup on login or after some delay
+showTaskPopup();
   
 });
