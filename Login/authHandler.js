@@ -5,7 +5,7 @@ import {
   doc,
   getDoc,
   updateDoc,
-  setDoc
+  setDoc,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import {
   getAuth,
@@ -13,7 +13,6 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
-
 
 const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers
 
@@ -27,6 +26,18 @@ function displayError(errorCode) {
     "auth/wrong-password": "Incorrect password. Please try again.",
   };
   return errorMessages[errorCode] || "An error occurred. Please try again.";
+}
+
+// Initialize Firebase Auth (await)
+async function initializeAuth() {
+  try {
+    const initializedAuth = await getAuth();
+    console.log("Auth initialized successfully.");
+    return initializedAuth;
+  } catch (error) {
+    console.error("Error initializing auth:", error);
+    throw error; // Re-throw error for handling if needed
+  }
 }
 
 // Initialize user count if not set
@@ -56,7 +67,7 @@ document.getElementById("signupButton").addEventListener("click", async () => {
   }
 
   try {
-    // Check the current user count
+    const initializedAuth = await initializeAuth(); // Ensure auth is initialized
     const docSnapshot = await getDoc(userCountRef);
     if (!docSnapshot.exists()) {
       console.log("User count document does not exist.");
@@ -66,25 +77,21 @@ document.getElementById("signupButton").addEventListener("click", async () => {
     const userCount = docSnapshot.data().count;
     console.log("Current user count:", userCount); // Debugging: Log the current user count
 
-    // Restrict signup if the user count exceeds the limit
     if (userCount >= 2) {
       alert("Signup limit reached. No more users can register at this time.");
       return;
     }
 
-    // Create a new user with Firebase Authentication
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(initializedAuth, email, password);
     const user = userCredential.user;
 
-    // Add the new user to Firestore
     await addDoc(collection(db, "users"), {
       uid: user.uid,
       email,
     });
 
-    // Increment the user count in Firestore
     await updateDoc(userCountRef, {
-      count: userCount + 1, // Increment the count field
+      count: userCount + 1,
     });
 
     alert("Signup successful. Welcome!");
@@ -106,8 +113,8 @@ document.getElementById("loginButton").addEventListener("click", async () => {
   }
 
   try {
-    // Sign in with Firebase Authentication
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const initializedAuth = await initializeAuth(); // Ensure auth is initialized
+    const userCredential = await signInWithEmailAndPassword(initializedAuth, email, password);
     alert("Login successful. Welcome back!");
     window.location.href = "../Calendar/calendarMain.html"; // Redirect to Calendar page
   } catch (error) {
