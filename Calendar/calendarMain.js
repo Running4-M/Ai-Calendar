@@ -201,57 +201,84 @@ helpButton.addEventListener("click", () => {
 });
 function showTaskPopup() {
   const taskPopup = document.getElementById('taskPopup');
-  const completeButton = document.getElementById('completeTaskButton');
-  const rescheduleButton = document.getElementById('rescheduleTaskButton');
+  const completeTaskButton = document.getElementById('completeTaskButton');
+  const rescheduleTaskButton = document.getElementById('rescheduleTaskButton');
   const askForHelpButton = document.getElementById('askForHelpButton');
+  const okButton = document.getElementById('okButton');
+  const laterButton = document.getElementById('laterButton');
+  const popupDate = document.getElementById('popupDate');
   const popupQuestion = document.getElementById('popupQuestion');
   const complimentText = document.getElementById('complimentText');
+  const popupButtons = document.getElementById('popupButtons');
+  const secondaryButtons = document.getElementById('secondaryButtons');
+  const helpDescription = document.getElementById('helpDescription');
+
+  // Get yesterday's date
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const formattedDate = yesterday.toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  // Set date in the popup
+  popupDate.innerText = `Have you completed your events for ${formattedDate}?`;
 
   // Display the popup
   taskPopup.style.display = 'flex';
-  popupQuestion.innerText = "Have you completed your tasks for the day?";
-  complimentText.innerText = ""; // Reset compliment text
 
-  // Handle 'Complete Task' button
-  completeButton.onclick = function() {
-    const quotes = [
-      "Well done! Keep going, you're doing great!",
-      "Success is the sum of small efforts, repeated day in and day out.",
-      "The way to get started is to quit talking and begin doing.",
-      "Believe in yourself! Every accomplishment starts with the decision to try."
-    ];
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-    popupQuestion.innerText = "Great job!";
-    complimentText.innerText = randomQuote;
-  };
-
-  // Handle 'Reschedule Task' button
-  rescheduleButton.onclick = function() {
-    popupQuestion.innerText = "You rescheduled your task.";
-    complimentText.innerText = "Don't forget to update your event in the calendar if you haven't already!";
-  };
-
-  // Handle 'Ask for Help' button
-  askForHelpButton.onclick = function() {
-    // First message
-    popupQuestion.innerText = "Please go to the responses page for the specific task.";
-    complimentText.innerText = ""; // Reset compliment text
-
-    // Automatically redirect to responses after 2 seconds
+  // Handle "Yes, I completed them!" button
+  completeTaskButton.onclick = function () {
+    complimentText.innerText =
+      "Great job! Here's some motivation: 'Success is not final, failure is not fatal: it is the courage to continue that counts.'";
+    popupButtons.style.display = 'none';
     setTimeout(() => {
-      window.location.href = '../display_Responses/chatgpt_Responses.html';
+      taskPopup.style.display = 'none';
     }, 2000);
+  };
+
+  // Handle "I rescheduled them" button
+  rescheduleTaskButton.onclick = function () {
+    complimentText.innerText =
+      'Friendly reminder: please update the event in the calendar if you have not already!';
+    popupButtons.style.display = 'none';
+    setTimeout(() => {
+      taskPopup.style.display = 'none';
+    }, 2000);
+  };
+
+  // Handle "No, I need help" button
+  askForHelpButton.onclick = function () {
+    popupButtons.style.display = 'none';
+    secondaryButtons.style.display = 'flex';
+    helpDescription.style.display = 'block';
+  };
+
+  // Handle "OK" button in secondary popup
+  okButton.onclick = function () {
+    window.location.href = '../display_Responses/chatgpt_Response.html';
+  };
+
+  // Handle "I'll do it later" button
+  laterButton.onclick = function () {
+    taskPopup.style.display = 'none';
   };
 }
 
-// Trigger popup logic
+// Show popup only once per day
 window.addEventListener('load', () => {
-  const now = new Date();
-  const currentTime = now.getHours();
+  const popupShownKey = 'popupShownDate';
+  const todayDate = new Date().toDateString(); // Get today's date as a string
 
-  // Show the popup after 12 PM or based on custom logic
-  if (currentTime >= 12) {
+  // Check localStorage to see if the popup was already shown today
+  const lastShownDate = localStorage.getItem(popupShownKey);
+
+  if (lastShownDate !== todayDate) {
+    // Show the popup and update localStorage
     showTaskPopup();
+    localStorage.setItem(popupShownKey, todayDate);
   }
 });
   
