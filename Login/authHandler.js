@@ -1,4 +1,4 @@
-import { db } from "../backend/firebase.js"; // Import Firestore instance from firebase.js
+import { db, auth } from "../backend/firebase.js"; // Import Firestore instance from firebase.js
 import {
   collection,
   addDoc,
