@@ -2,69 +2,72 @@ import { Timestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-fi
 import { fetchEvents, saveEvent, updateEvent, deleteEvent, fetchEventsForToday, saveResponse, getResponsesByDateAndTitle, db } from "../backend/firebase.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 import { fetchChatGPTResponse } from "../AI/chatgpt.js"; // Import the AI response function
+
 let selectedEvent = null;
 document.addEventListener("DOMContentLoaded", async () => {
   const calendarEl = document.getElementById("calendar");
-  const deleteButton = document.getElementById("deleteEvent"); // Ensure this ID matches your delete button
+  const deleteButton = document.getElementById("deleteEvent");
+  const completeButton = document.getElementById("completeTask"); // Add a button for marking the task as completed
+
   // Initialize Firebase Authentication
   const auth = getAuth();
   let userId = null;
+
   // Check for authentication state
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // User is signed in
       userId = user.uid;
     } else {
-      // No user is signed in
       alert("You need to log in first.");
       window.location.href = "../Login/login.html";
       return;
     }
+
     const calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: "dayGridMonth",
       selectable: true,
-      editable: true, // Allows drag-and-drop
+      editable: true,
       events: async (info, successCallback, failureCallback) => {
         try {
-          if (!userId) {
-            throw new Error("User not authenticated.");
-          }
-          const events = await fetchEvents(); // You no longer need to pass userId, as it's handled inside fetchEvents
+          if (!userId) throw new Error("User not authenticated.");
+          const events = await fetchEvents();
           successCallback(events);
         } catch (error) {
           console.error("Error fetching events: ", error.message);
           failureCallback(error);
         }
       },
-      // Handle creating new events
+
       dateClick: function (info) {
         selectedEvent = null;
         document.querySelector("#eventTitle").value = "";
         document.querySelector("#eventDate").value = info.dateStr;
         document.querySelector("#aiType").value = "";
         document.querySelector("#taskDetails").value = "";
-        deleteButton.style.display = "none";
+        completeButton.style.display = "none"; // Hide task completed button when creating a new event
+        deleteButton.style.display = "none";  // Hide delete button
         document.querySelector("#eventModal").style.display = "block";
       },
-      // Handle event click (edit/delete event)
-     eventClick: function (info) {
-  const clickedEvent = info.event;
-  selectedEvent = {
-    id: clickedEvent.id,
-    title: clickedEvent.title,
-    date: clickedEvent.start,
-    aiType: clickedEvent.extendedProps.aiType,
-    description: clickedEvent.extendedProps.description,
-  };
-  document.querySelector("#eventTitle").value = selectedEvent.title;
-  document.querySelector("#eventDate").value = selectedEvent.date.toISOString().slice(0, 10);
-  document.querySelector("#aiType").value = selectedEvent.aiType || "brainstorm";
-  document.querySelector("#taskDetails").value = selectedEvent.description;
-  deleteButton.style.display = "block";
-  document.querySelector("#markAsCompleted").style.display = "block"; // Show "Task Completed" button
-  document.querySelector("#eventModal").style.display = "block";
-},
-      // Handle drag-and-drop to update event dates
+
+      eventClick: function (info) {
+        const clickedEvent = info.event;
+        selectedEvent = {
+          id: clickedEvent.id,
+          title: clickedEvent.title,
+          date: clickedEvent.start,
+          aiType: clickedEvent.extendedProps.aiType,
+          description: clickedEvent.extendedProps.description,
+          completed: clickedEvent.extendedProps.completed, // Store completion status
+        };
+        document.querySelector("#eventTitle").value = selectedEvent.title;
+        document.querySelector("#eventDate").value = selectedEvent.date.toISOString().slice(0, 10);
+        document.querySelector("#aiType").value = selectedEvent.aiType || "brainstorm";
+        document.querySelector("#taskDetails").value = selectedEvent.description;
+        completeButton.style.display = "block"; // Show the task completed button
+        deleteButton.style.display = "block";  // Show delete button
+        document.querySelector("#eventModal").style.display = "block";
+      },
+
       eventDrop: async (info) => {
         const droppedEvent = info.event;
         try {
@@ -73,24 +76,28 @@ document.addEventListener("DOMContentLoaded", async () => {
             date: droppedEvent.start.toISOString().slice(0, 10),
             aiType: droppedEvent.extendedProps.aiType || "brainstorm",
             description: droppedEvent.extendedProps.description || "",
+            completed: droppedEvent.extendedProps.completed || false, // Maintain completion status
           };
           await updateEvent(droppedEvent.id, updatedEvent);
           alert("Event updated successfully after drag-and-drop!");
         } catch (error) {
           console.error("Error updating event on drag-and-drop: ", error.message);
           alert("Failed to update the event. Please try again.");
-          info.revert(); // Revert the event to its original position on failure
+          info.revert();
         }
       },
     });
+
     calendar.render();
+
     // Save button functionality
     document.querySelector("#saveEvent").addEventListener("click", async () => {
       const title = document.querySelector("#eventTitle").value;
       const date = document.querySelector("#eventDate").value;
       const aiType = document.querySelector("#aiType").value;
       const description = document.querySelector("#taskDetails").value;
-      const eventData = { title, date, aiType, description, userId }; // Include userId
+      const eventData = { title, date, aiType, description, userId };
+
       try {
         if (selectedEvent && selectedEvent.id) {
           await updateEvent(selectedEvent.id, eventData);
@@ -99,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           await saveEvent(eventData);
           alert("Event added successfully!");
         }
-        const events = await fetchEvents(userId); // Fetch events by user ID
+        const events = await fetchEvents(userId);
         calendar.removeAllEvents();
         calendar.addEventSource(events);
         document.querySelector("#eventModal").style.display = "none";
@@ -108,6 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Failed to save event. Please try again.");
       }
     });
+
     // Delete button functionality
     deleteButton.addEventListener("click", async () => {
       if (!selectedEvent || !selectedEvent.id) return;
@@ -124,101 +132,58 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
     });
+
+    // Task Completed button functionality (now deletes event and shows popup)
+    completeButton.addEventListener("click", async () => {
+      if (!selectedEvent || !selectedEvent.id) return;
+      try {
+        // Delete the event (similar to delete button)
+        await deleteEvent(selectedEvent.id);
+        calendar.getEventById(selectedEvent.id).remove();
+        document.querySelector("#eventModal").style.display = "none";
+
+        // Show green "Well done!" popup
+        const popup = document.createElement("div");
+        popup.textContent = "Well done with task completed!";
+        popup.style.position = "fixed";
+        popup.style.top = "50%";
+        popup.style.left = "50%";
+        popup.style.transform = "translate(-50%, -50%)";
+        popup.style.backgroundColor = "green";
+        popup.style.color = "white";
+        popup.style.padding = "20px";
+        popup.style.fontSize = "20px";
+        popup.style.borderRadius = "5px";
+        popup.style.zIndex = "9999";
+        document.body.appendChild(popup);
+
+        // Remove the popup after 3 seconds
+        setTimeout(() => {
+          popup.remove();
+        }, 3000);
+      } catch (error) {
+        console.error("Error marking task as completed: ", error.message);
+        alert("Failed to mark the task as completed. Please try again.");
+      }
+    });
+
+    // Close modal
     document.querySelector("#closeModal").addEventListener("click", () => {
       document.querySelector("#eventModal").style.display = "none";
     });
-    // Process AI Responses for today's events
-    const today = new Date().toISOString().slice(0, 10);
-    try {
-      const todaysEvents = await fetchEventsForToday(today, userId); // Pass userId for filtering
-      for (const event of todaysEvents) {
-        const existingResponse = await getResponsesByDateAndTitle(event.date, event.title, userId); // Filter by userId
-        if (!existingResponse) {
-          const prompt = `Task: ${event.title}\nDetails: ${event.description}\nAI Type: ${event.aiType}`;
-          const response = await fetchChatGPTResponse(prompt);
-          await saveResponse({
-            date: event.date,
-            eventTitle: event.title,
-            response: response,
-            userId, // Associate response with userId
-          });
-        } else {
-          console.log(`Response already exists for event "${event.title}"`);
-        }
+
+    // Handle logout
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        alert("You have been logged out.");
+        window.location.href = "../Login/login.html";
+      } catch (error) {
+        console.error("Logout error:", error);
+        alert("Failed to log out. Please try again.");
       }
-    } catch (error) {
-      console.error("Error processing AI responses: ", error.message);
-    }
+    });
   });
-  const chatgptResponsesButton = document.getElementById("chatgptResponsesButton");
-  // Add click event listener to the button
-  chatgptResponsesButton.addEventListener("click", () => {
-    // Redirect to chatgpt_Responses.html
-    window.location.href = "../display_Responses/chatgpt_Response.html";
-  });
-  // Toggle menu visibility
-  document.getElementById("menuButton").addEventListener("click", () => {
-    const menuOptions = document.getElementById("menuOptions");
-    menuOptions.style.display = menuOptions.style.display === "none" ? "block" : "none";
-  });
-  // Handle logout
-  document.getElementById("logoutButton").addEventListener("click", async () => {
-    try {
-      await signOut(auth);
-      alert("You have been logged out.");
-      window.location.href = "../Login/login.html"; // Redirect to login page
-    } catch (error) {
-      console.error("Logout error:", error);
-      alert("Failed to log out. Please try again.");
-    }
-  });
-  const menuButton = document.getElementById("menuButton");
-const sidebar = document.getElementById("sidebar");
-const closeSidebar = document.getElementById("closeSidebar");
-const overlay = document.getElementById("overlay");
-const userIcon = document.querySelector(".user-icon"); // Select the user icon
-const helpButton = document.getElementById("helpButton"); // Select the help button
-// Open the sidebar
-menuButton.addEventListener("click", () => {
-  sidebar.classList.add("open");
-  overlay.classList.add("visible");
-  userIcon.classList.add("hidden"); // Hide the user icon
-});
-// Close the sidebar
-closeSidebar.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
-});
-// Close the sidebar when clicking the overlay
-overlay.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
-});
-// Redirect to the help page when the help button is clicked
-helpButton.addEventListener("click", () => {
-  window.location.href = "../help/help.html"; // Redirect to the help page
-});
-  document.querySelector("#markAsCompleted").addEventListener("click", async () => {
-  if (!selectedEvent || !selectedEvent.id) return;
 
-  try {
-    await deleteEvent(selectedEvent.id); // Reuse your delete function
-    calendar.getEventById(selectedEvent.id).remove(); // Remove event from calendar
-
-    // Show motivational popup
-    const popup = document.getElementById("completionPopup");
-    popup.style.display = "block";
-    setTimeout(() => {
-      popup.style.display = "none";
-    }, 3000); // Hide popup after 3 seconds
-
-    document.querySelector("#eventModal").style.display = "none"; // Close modal
-  } catch (error) {
-    console.error("Error completing task: ", error.message);
-    alert("Failed to mark task as completed. Please try again.");
-  }
 });
-  
-});
+
