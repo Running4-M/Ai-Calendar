@@ -8,7 +8,24 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   </head>
   <style>
+#completionPopup {
+  animation: fadeInOut 3s ease-in-out;
+}
 
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  20%, 80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
 
   .user-menu {
   position: absolute;
@@ -401,6 +418,10 @@
 
         <button id="saveEvent">Save</button>
         <button id="deleteEvent" style="display: none;">Delete</button>
+        <button id="markAsCompleted" style="display: none;">Task Completed</button>
+<div id="completionPopup" style="display: none; background-color: #d4edda; color: #155724; padding: 10px; position: fixed; bottom: 20px; right: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+  🎉 Well done! Keep it up! 🎉
+</div>
         <button id="closeModal">Cancel</button>
       </div>
     </div>
