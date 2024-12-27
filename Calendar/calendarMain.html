@@ -8,40 +8,88 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   </head>
   <style>
-  /* Style for the task popup */
+ /* Style for the Task Completion Popup */
 .task-popup {
-  display: none;  /* Initially hidden */
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   z-index: 1000;
-  width: 300px;
+}
+
+.popup-content {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 30px 20px;
+  width: 90%;
+  max-width: 500px;
   text-align: center;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.popup-button {
-  margin: 10px 0;
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.popup-button:hover {
-  background-color: #45a049;
+.popup-content p {
+  font-size: 1.2em;
+  color: #333333;
+  margin-bottom: 20px;
 }
 
 .compliment-text {
-  margin-top: 20px;
-  font-style: italic;
-  color: #555;
+  font-size: 1em;
+  color: #555555;
+  margin: 10px 0;
+}
+
+.popup-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between buttons */
+}
+
+.popup-button {
+  background-color: #4caf50; /* Green */
+  color: #ffffff;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.popup-button:hover {
+  background-color: #45a049; /* Darker green */
+  transform: scale(1.05);
+}
+
+/* Specific button colors */
+.complete-btn {
+  background-color: #4caf50; /* Green */
+}
+
+.complete-btn:hover {
+  background-color: #45a049;
+}
+
+.reschedule-btn {
+  background-color: #ffc107; /* Yellow */
+}
+
+.reschedule-btn:hover {
+  background-color: #ffb300;
+}
+
+.help-btn {
+  background-color: #f44336; /* Red */
+}
+
+.help-btn:hover {
+  background-color: #e53935;
 }
   .user-menu {
   position: absolute;
@@ -440,14 +488,19 @@
 
     <button id="chatgptResponsesButton">Calendar AI Responses</button>
 
- <!-- taskPopup HTML structure -->
+<!-- Updated Task Completion Popup -->
 <div id="taskPopup" class="task-popup">
   <div class="popup-content">
-    <p id="popupQuestion">Have you completed today's task?</p>
+    <!-- First Message -->
+    <p id="popupQuestion">Have you completed your tasks for the day?</p>
     <div id="complimentText" class="compliment-text"></div>
-    <button id="completeTaskButton" class="popup-button">Complete Task</button>
-    <button id="rescheduleTaskButton" class="popup-button">Reschedule Task</button>
-    <button id="askForHelpButton" class="popup-button">Ask for Help</button>
+    
+    <!-- Buttons -->
+    <div class="popup-buttons">
+      <button id="completeTaskButton" class="popup-button complete-btn">Yes, I completed them!</button>
+      <button id="rescheduleTaskButton" class="popup-button reschedule-btn">I rescheduled them</button>
+      <button id="askForHelpButton" class="popup-button help-btn">No, I need help</button>
+    </div>
   </div>
 </div>
 
