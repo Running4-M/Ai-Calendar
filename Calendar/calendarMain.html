@@ -442,13 +442,15 @@
 
     <button id="chatgptResponsesButton">Calendar AI Responses</button>
 
-    <!-- Task Completion Popup -->
-<div id="taskPopup" style="display: none; position: fixed; top: 30%; left: 50%; transform: translateX(-50%); padding: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); z-index: 1000; width: 300px; text-align: center;">
-  <h3 id="popupQuestion">Have you completed today's task?</h3>
-  <button id="completeTaskButton">Yes, I completed it!</button>
-  <button id="rescheduleTaskButton">No, reschedule it.</button>
-  <button id="askForHelpButton">I need help with the task.</button>
-  <p id="complimentText" style="margin-top: 10px; font-style: italic; color: #28a745;"></p>
+ <!-- taskPopup HTML structure -->
+<div id="taskPopup" class="task-popup">
+  <div class="popup-content">
+    <p id="popupQuestion">Have you completed today's task?</p>
+    <div id="complimentText" class="compliment-text"></div>
+    <button id="completeTaskButton" class="popup-button">Complete Task</button>
+    <button id="rescheduleTaskButton" class="popup-button">Reschedule Task</button>
+    <button id="askForHelpButton" class="popup-button">Ask for Help</button>
+  </div>
 </div>
 
     <script src="calendarMain.js" type="module"></script>
