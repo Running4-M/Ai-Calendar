@@ -199,7 +199,6 @@ overlay.addEventListener("click", () => {
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
-// Show the popup asking about task completion
 function showTaskPopup() {
   const taskPopup = document.getElementById('taskPopup');
   const completeButton = document.getElementById('completeTaskButton');
@@ -208,11 +207,12 @@ function showTaskPopup() {
   const popupQuestion = document.getElementById('popupQuestion');
   const complimentText = document.getElementById('complimentText');
 
-  // Display the popup with the task completion question
-  taskPopup.style.display = 'block';
-  popupQuestion.innerText = "Have you completed today's task?";
+  // Display the popup
+  taskPopup.style.display = 'flex';
+  popupQuestion.innerText = "Have you completed your tasks for the day?";
+  complimentText.innerText = ""; // Reset compliment text
 
-  // Handle 'Complete Task' button click
+  // Handle 'Complete Task' button
   completeButton.onclick = function() {
     const quotes = [
       "Well done! Keep going, you're doing great!",
@@ -220,40 +220,38 @@ function showTaskPopup() {
       "The way to get started is to quit talking and begin doing.",
       "Believe in yourself! Every accomplishment starts with the decision to try."
     ];
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]; // Random quote from the list
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     popupQuestion.innerText = "Great job!";
     complimentText.innerText = randomQuote;
   };
 
-  // Handle 'Reschedule Task' button click
+  // Handle 'Reschedule Task' button
   rescheduleButton.onclick = function() {
-    popupQuestion.innerText = "You can reschedule the task for a later time.";
+    popupQuestion.innerText = "You rescheduled your task.";
     complimentText.innerText = "Don't forget to update your event in the calendar if you haven't already!";
   };
 
-  // Handle 'Ask for Help' button click
+  // Handle 'Ask for Help' button
   askForHelpButton.onclick = function() {
-    popupQuestion.innerText = "You haven't completed your task yet. Please go to your tasks and click 'Start Chat' to get help.";
-    complimentText.innerText = ""; // No compliment if they haven't completed the task
-    // Redirect to the responses page (make sure the event ID or title is passed in the URL if needed)
-    window.location.href = '../display_Responses/chatgpt_Response.html'; // You can modify this URL if necessary to pass context
+    // First message
+    popupQuestion.innerText = "Please go to the responses page for the specific task.";
+    complimentText.innerText = ""; // Reset compliment text
+
+    // Automatically redirect to responses after 2 seconds
+    setTimeout(() => {
+      window.location.href = '../display_Responses/chatgpt_Responses.html';
+    }, 2000);
   };
 }
 
-// Close the popup (optional: could be called after a button click or other action)
-function closePopup() {
-  const taskPopup = document.getElementById('taskPopup');
-  taskPopup.style.display = 'none';
-}
-
-// Show the popup after a delay or on page load
+// Trigger popup logic
 window.addEventListener('load', () => {
   const now = new Date();
-  const currentTime = now.getHours(); // Get the current hour
-  
-  // Set a delay to show the popup after a few hours (e.g., after 12 PM or next day)
+  const currentTime = now.getHours();
+
+  // Show the popup after 12 PM or based on custom logic
   if (currentTime >= 12) {
-    showTaskPopup(); // Show the task completion popup
+    showTaskPopup();
   }
 });
   
