@@ -199,13 +199,36 @@ overlay.addEventListener("click", () => {
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
-  function showTaskPopup() {
+// Function to fetch events for today
+async function fetchEventsForToday(today, userId) {
+  const eventsCollection = collection(db, "events"); // Reference to Firestore collection
+  const todayQuery = query(
+    eventsCollection,
+    where("userId", "==", userId), // Filter events by userId
+    where("date", "==", today)   // Filter events by date
+  );
+  const querySnapshot = await getDocs(todayQuery);
+
+  const events = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return events;
+}
+
+// Function to show the task popup
+async function showTaskPopup() {
   const taskPopup = document.getElementById('taskPopup');
   const currentDate = new Date();
   const currentHour = currentDate.getHours();
-
-  // Get the user's events for today
-  fetchEventsForToday().then(events => {
+  const today = currentDate.toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+  const userId = getUserId(); // Ensure this gets the actual user ID
+  
+  try {
+    // Get the user's events for today
+    const events = await fetchEventsForToday(today, userId);
+    
     const taskCompleted = events.some(event => event.completed); // Assume 'completed' is a field in the event
 
     // Show the popup if there are no completed tasks
@@ -231,35 +254,15 @@ helpButton.addEventListener("click", () => {
         window.location.href = '/responses.html'; // Ensure the event is passed or retrieved correctly to start the chat
       };
     }
-  });
-}
-
-// Check events for today and when the popup should show up (e.g., show after 12 PM or the next day)
-function fetchEventsForToday() {
-  return new Promise((resolve, reject) => {
-    const userId = getUserId(); // Make sure to get the logged-in user's ID
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-
-    // Fetch events for today from Firebase or any backend
-    firebase.firestore().collection('events')
-      .where('userId', '==', userId)
-      .where('date', '==', today)
-      .get()
-      .then(snapshot => {
-        const events = snapshot.docs.map(doc => doc.data());
-        resolve(events);
-      })
-      .catch(err => {
-        console.error('Error fetching events:', err);
-        reject(err);
-      });
-  });
+  } catch (error) {
+    console.error('Error processing AI responses:', error);
+  }
 }
 
 // Get the logged-in user's ID (you may already have this part in place)
 function getUserId() {
-  // Placeholder for actual user ID logic (like Firebase Auth)
-  return 'someUserId'; 
+  // Replace this with the actual logic to get the user ID (e.g., Firebase Auth)
+  return auth.currentUser.uid; // This is assuming you're using Firebase Auth for user login
 }
 
 // Trigger the popup on login or after some delay
