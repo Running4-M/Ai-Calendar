@@ -8,32 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   </head>
   <style>
-    #taskProgressContainer {
-  margin-top: 20px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-}
-
-#taskProgressBar {
-  width: 0%;
-  height: 25px;
-  background-color: #4CAF50;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: width 0.5s ease-in-out; /* Smooth transition for progress */
-}
-
-#taskProgressText {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #555;
-  font-weight: bold;
-}
-
-#taskProgressText span {
-  font-size: 18px;
-  color: #4CAF50;
-}
   .user-menu {
   position: absolute;
   top: 10px;
@@ -350,7 +324,7 @@
         <img src="../assets/user-icon.png" alt="User Icon" class="user-icon" />
       </button>
     </div>
-    
+
     <div id="sidebar" class="sidebar">
       <div class="sidebar-header">
         <h2>User Menu</h2>
@@ -366,22 +340,22 @@
         </div>
       </div>
     </div>
-    
+
     <div id="overlay" class="overlay"></div>
 
     <div id="calendar" style="max-width: 900px; margin: 40px auto;"></div>
 
     <!-- Modal -->
-    
+
     <div id="eventModal">
       <div id="modalContent">
         <h3>Hi! Let’s set up your task 👋</h3>
-        
+
         <!-- Question 1 -->
         <p>What would you like to do?</p>
         <input type="text" id="eventTitle" placeholder="E.g., Write about animals" />
         <input type="text" id="eventDate" disabled placeholder="Event Date" />
-        
+
         <!-- Question 2 -->
         <p>How can I help with this task?</p>
         <select id="aiType">
@@ -393,7 +367,7 @@
               <option value="create-content">Create Content (Articles, Blog Posts, Social Media)</option>
               <option value="product-description">Generate Product Description</option>
           </optgroup>
-      
+
           <!-- Writing Category -->
           <optgroup label="Writing">
               <option value="summary">Summarize Information</option>
@@ -401,15 +375,16 @@
               <option value="email-draft">Email Draft</option>
               <option value="creative-writing">Creative Writing (Stories, Poems)</option>
           </optgroup>
-      
+
           <!-- Research Category -->
           <optgroup label="Research">
               <option value="research">Conduct Research (Summarize Information)</option>
               <option value="learning-help">Learning Help (Explanations)</option>
           </optgroup>
-      
+
           
-      
+          
+
           <!-- Miscellaneous Category -->
           <optgroup label="Miscellaneous">
               <option value="answer-questions">Answer Questions</option>
@@ -417,11 +392,11 @@
               <option value="other">Other</option>
           </optgroup>
       </select>
-        
+
         <!-- Question 3 -->
         <p>Any specific details or focus areas I should know about?</p>
         <textarea id="taskDetails" placeholder="E.g., Focus on nocturnal animals and their diet."></textarea>
-        
+
         <button id="saveEvent">Save</button>
         <button id="deleteEvent" style="display: none;">Delete</button>
         <button id="closeModal">Cancel</button>
@@ -429,14 +404,6 @@
     </div>
 
     <button id="chatgptResponsesButton">Calendar AI Responses</button>
-
-    <div id="taskCompletionBar" style="display: none; margin-top: 20px;">
-  <div id="taskProgressContainer">
-    <p id="taskProgressText">Complete 7 tasks to get a reward!</p>
-    <div id="taskProgressBar" style="width: 0%; height: 20px; background-color: #4caf50; border-radius: 5px;"></div>
-  </div>
-  <p id="completionStatusText">You’ve added events for 0 out of 7 days!</p>
-</div>
 
     <script src="calendarMain.js" type="module"></script>
     <script src="../backend/firebase.js" type="module"></script>
