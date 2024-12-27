@@ -13,7 +13,7 @@ async function getFirebaseConfig() {
 async function initializeFirebase() {
   try {
     const firebaseConfig = await getFirebaseConfig(); // Fetch config from the backend
-    const app = initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig); // Initialize Firebase with the fetched config
     const db = getFirestore(app);
     const auth = getAuth(app);
 
