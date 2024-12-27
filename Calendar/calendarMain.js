@@ -1,5 +1,5 @@
 import { Timestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import { fetchEvents, saveEvent, updateEvent, deleteEvent, fetchEventsForToday, saveResponse, getResponsesByDateAndTitle } from "../backend/firebase.js";
+import { fetchEvents, saveEvent, updateEvent, deleteEvent, fetchEventsForToday, saveResponse, getResponsesByDateAndTitle, db } from "../backend/firebase.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 import { fetchChatGPTResponse } from "../AI/chatgpt.js"; // Import the AI response function
 let selectedEvent = null;
