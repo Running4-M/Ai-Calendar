@@ -14,7 +14,7 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"; // Import Firebase Auth
 
-const auth = getAuth();
+
 const userCountRef = doc(db, "userCount", "totalUsers"); // Document reference for totalUsers
 
 // Utility: Display error messages
