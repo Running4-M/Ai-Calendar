@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function showCompletionBar() {
       taskCompletionBar.style.display = "block"; // Show the bar
-      taskCompletionBar.innerHTML = `<div>Complete 7 tasks to get a reward!</div><div class="progress" style="width: 0%;"></div>`;
+      taskCompletionBar.innerHTML = `<div>Complete 7 tasks to get a reward!</div><div class="progress" style="width: 0%;"></div><div id="taskProgressText">0/7</div>`;
       updateCompletionProgress(0); // Initially set progress to 0%
 
       // Add logic for tracking task completion here
@@ -215,6 +215,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     function updateCompletionProgress(progress) {
       const progressBar = taskCompletionBar.querySelector(".progress");
       progressBar.style.width = `${progress}%`;
+
+      // Update the text showing the task count
+      const taskProgressText = document.getElementById("taskProgressText");
+      const completedTasks = taskCompletionStatus.completedTasks;
+      taskProgressText.textContent = `${completedTasks}/7`;
     }
   });
 
@@ -277,3 +282,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "../help/help.html"; // Redirect to the help page
   });
 });
+
