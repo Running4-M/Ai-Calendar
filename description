@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Must Read Before Signing Up!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #444;
+            text-align: center;
+        }
+        h2 {
+            color: #555;
+            margin-top: 20px;
+        }
+        p, li {
+            margin-bottom: 10px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .signup-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .signup-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Must Read Before Signing Up!</h1>
+
+        <p><strong>Hi HN,</strong></p>
+        <p>I’m excited to share a project I’ve been working on—a Personalized AI Calendar with ChatGPT Integration—and I’m looking for up to 20 people to test it out during a 7-day trial.</p>
+
+        <h2>Important Information</h2>
+        <p>The website URL for this trial does not have a custom domain name, so you won’t be able to access it by searching online. Please bookmark the link or add it as a shortcut during the trial to ensure you can access the website easily for these seven days.</p>
+
+        <h2>What This AI Calendar Does</h2>
+        <p>This tool is designed to help you plan and prepare for tasks ahead of time, not just jot down quick notes or reminders. It’s all about getting a head start on tasks that require creativity or preparation. Here’s how it works:</p>
+        <ul>
+            <li><strong>Plan Ahead:</strong> Spend 10 minutes at the start of the week to create events for all the tasks you plan to work on. This lets the AI generate tailored responses on the scheduled day, saving you time and effort.</li>
+            <li><strong>AI-Driven Responses:</strong> On the day of the event, the AI will deliver customized responses to kickstart your tasks, such as brainstorm ideas, outlines, or strategies for roadblocks.</li>
+            <li><strong>Interactive Refinement:</strong> Use the "Start Chat" feature to adjust the AI’s responses to your specific needs for a personalized experience.</li>
+            <li><strong>Flexible Scheduling:</strong> Drag and drop events to adjust timing as needed. AI responses are generated only on the scheduled day to provide relevant support.</li>
+        </ul>
+
+        <h2>Trial Details and How to Sign Up</h2>
+        <ul>
+            <li><strong>Commitment Required:</strong> Please only sign up if you’re willing to give it a proper try and provide feedback.</li>
+            <li><strong>Fake Emails Welcome:</strong> You can use a fake email to sign up. Just choose a simple password you’ll remember since there’s no password recovery feature.</li>
+            <li><strong>Chat Limitations:</strong> During the trial, chat is limited to 10 messages per session and 100 words per user message.</li>
+        </ul>
+        <p>Need help? A help page with step-by-step instructions and images is available on the website.</p>
+
+        <h2>Why Only 20 Testers?</h2>
+        <p>This trial is limited to 20 people so I can gather meaningful feedback and ensure a smooth experience. Feedback can include feature suggestions, UI improvements, or general thoughts on functionality and usability.</p>
+
+        <h2>Additional Information</h2>
+        <ul>
+            <li><strong>Not Mobile-Friendly:</strong> Use a desktop or laptop for the best experience during the trial.</li>
+            <li><strong>Password Warning:</strong> You might see an alert from Google saying, “your password may be compromised.” This is a false positive with Firebase Authentication. Simply click "Ignore" to proceed.</li>
+        </ul>
+
+        <div class="button-container">
+            <a href="signup.html" class="signup-button">Go to Sign-Up Page</a>
+        </div>
+    </div>
+</body>
+</html>
