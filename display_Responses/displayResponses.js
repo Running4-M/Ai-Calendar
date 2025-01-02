@@ -181,12 +181,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       .replace(/<li>(.*?)<\/li>/g, "<ul><li>$1</li></ul>"); // Wrap bullet points in <ul>
   }
 
-  // Toggle menu visibility
-  document.getElementById("menuButton").addEventListener("click", () => {
-    const menuOptions = document.getElementById("menuOptions");
-    menuOptions.style.display = menuOptions.style.display === "none" ? "block" : "none";
-  });
-
   // Handle logout
   document.getElementById("logoutButton").addEventListener("click", async () => {
     try {
@@ -199,40 +193,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  document.getElementById("calendarButton").addEventListener("click", () => {
-    window.location.href = "../Calendar/calendarMain.html"; // Adjust the path as needed
-  });
-  const menuButton = document.getElementById("menuButton");
+ // Get elements from the DOM
+const menuButton = document.getElementById("menuButton");
 const sidebar = document.getElementById("sidebar");
 const closeSidebar = document.getElementById("closeSidebar");
 const overlay = document.getElementById("overlay");
-const userIcon = document.querySelector(".user-icon"); // Select the user icon
-const helpButton = document.getElementById("helpButton"); // Select the help button
+const helpButton = document.getElementById("helpButton");
 
-// Open the sidebar
+// Toggle sidebar visibility when menu button is clicked
 menuButton.addEventListener("click", () => {
-  sidebar.classList.add("open");
-  overlay.classList.add("visible");
-  userIcon.classList.add("hidden"); // Hide the user icon
+  sidebar.classList.add("open"); // Add the open class
+  overlay.style.display = "block"; // Show the overlay
 });
 
-// Close the sidebar
+// Close the sidebar when the close button is clicked
 closeSidebar.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
+  sidebar.classList.remove("open"); // Remove the open class
+  overlay.style.display = "none"; // Hide the overlay
 });
 
 // Close the sidebar when clicking the overlay
 overlay.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
+  sidebar.classList.remove("open"); // Remove the open class
+  overlay.style.display = "none"; // Hide the overlay
 });
 
 // Redirect to the help page when the help button is clicked
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
-
 });
