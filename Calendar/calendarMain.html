@@ -27,165 +27,7 @@
   }
 
 
-  .user-menu {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 3000;
-}
 
-.user-menu .user-icon {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  border-radius: 50%; /* Fully rounded corners */
-  border: 2px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.user-menu .user-icon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: 0; /* Sidebar starts at its normal position */
-  transform: translateX(100%); /* Fully hide the sidebar by shifting it out of view */
-  height: 100%;
-  width: 300px;
-  background-color: #ffffff;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out; /* Smooth slide animation */
-  z-index: 2000;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-
-.sidebar.open {
-  transform: translateX(0); /* Bring the sidebar into view */
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Darken the background */
-  z-index: 1500;
-  display: none;
-}
-
-.overlay.active {
-  display: block; /* Show the overlay when the sidebar is open */
-}
-/* Sidebar styling */
-
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-}
-
-.sidebar-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-.close-sidebar {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #333;
-}
-
-.sidebar-content {
-  margin-top: 20px;
-}
-
-.sidebar-content button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  font-size: 1rem;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.hidden {
-  display: none;
-}
-
-#logoutButton {
-  background-color: #ff4d4d;
-}
-
-#logoutButton:hover {
-  background-color: #e60000;
-}
-
-#helpButton {
-  background-color: #007bff;
-}
-
-#helpButton:hover {
-  background-color: #0056b3;
-}
-
-.feedback-section {
-  margin-top: 20px;
-  font-size: 1rem;
-}
-
-.feedback-section h3 {
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.feedback-section p {
-  margin: 5px 0;
-  color: #555;
-}
-
-.feedback-section a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.feedback-section a:hover {
-  text-decoration: underline;
-}
-
-/* Overlay styling */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  display: none;
-}
-
-/* Open sidebar styles */
-.sidebar.open {
-  right: 0;
-}
-
-.overlay.visible {
-  display: block;
-}
 
 /* Modal styling */
 #eventModal {
@@ -338,13 +180,25 @@
 
   </style>
   <body>
-    <div id="userMenu" class="user-menu">
-      <button id="menuButton">
-        <img src="../assets/user-icon.png" alt="User Icon" class="user-icon" />
-      </button>
-    </div>
-
-    <div id="sidebar" class="sidebar">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <div class="logo">AI Calendar</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="../display_Responses/chatgpt_Response.html">Responses</a></li>
+        <li><a href="#" class="active">Calendar</a></li>
+        <li><a href="https://discord.gg/k8ScmC29N5">Discord</a></li>
+      </ul>
+      <div class="navbar-right">
+        <div id="userMenu" class="user-menu">
+          <button id="menuButton">
+            <img src="../assets/user-icon.png" alt="User Icon" class="user-icon" />
+          </button>
+        </div>
+      </div>
+    </nav>
+    
+    <div id="sidebar" class="sidebar"> <!-- Changed the ID from sidebar to menuOptions -->
       <div class="sidebar-header">
         <h2>User Menu</h2>
         <button id="closeSidebar" class="close-sidebar">&times;</button>
@@ -355,11 +209,11 @@
         <div class="feedback-section">
           <h3>Any Feedback?</h3>
           <p>Email: <a href="mailto:mchlrotaru@gmail.com">mchlrotaru@gmail.com</a></p>
-        <p>Discord: <a href="https://discord.gg/b35jhnCH" target="_blank">Visit discord</a></p>
+          <p>Discord: <a href="https://discord.gg/b35jhnCH" target="_blank">Visit Discord</a></p>
         </div>
       </div>
     </div>
-
+    
     <div id="overlay" class="overlay"></div>
 
     <div id="calendar" style="max-width: 900px; margin: 40px auto;"></div>
@@ -431,7 +285,7 @@
 </div>
 
 
-    <button id="chatgptResponsesButton">Calendar AI Responses</button>
+    
 
 
 
