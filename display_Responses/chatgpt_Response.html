@@ -5,10 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChatGPT Responses</title>
   <style>
-  .user-menu {
+  body, h3, p, ul, li, a, button {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.user-menu {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -25px;
+  right: -10px;
   z-index: 3000;
 }
 
@@ -16,7 +28,7 @@
   width: 40px;
   height: 40px;
   cursor: pointer;
-  border-radius: 50%; /* Fully rounded corners */
+  border-radius: 50%;
   border: 2px solid #ccc;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -26,24 +38,80 @@
   transform: scale(1.1);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #5a4ce6;
+}
+
+.navbar-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.navbar-right {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #555;
+}
+
+.nav-links a.active {
+  color: #5a4ce6;
+  font-weight: bold;
+  border-bottom: 2px solid #5a4ce6;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
-  right: 0; /* Sidebar starts at its normal position */
-  transform: translateX(100%); /* Fully hide the sidebar by shifting it out of view */
+  right: 0;
+  transform: translateX(100%);
   height: 100%;
   width: 300px;
   background-color: #ffffff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out; /* Smooth slide animation */
+  transition: transform 0.3s ease-in-out;
   z-index: 2000;
   padding: 20px;
-  font-family: Arial, sans-serif;
 }
 
-
 .sidebar.open {
-  transform: translateX(0); /* Bring the sidebar into view */
+  transform: translateX(0);
 }
 
 .overlay {
@@ -52,16 +120,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Darken the background */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1500;
   display: none;
 }
 
 .overlay.active {
-  display: block; /* Show the overlay when the sidebar is open */
+  display: block;
 }
-/* Sidebar styling */
-
 
 .sidebar-header {
   display: flex;
@@ -72,7 +138,6 @@
 }
 
 .sidebar-header h2 {
-  margin: 0;
   font-size: 1.5rem;
   color: #333;
 }
@@ -100,8 +165,9 @@
   cursor: pointer;
   transition: background-color 0.3s;
 }
-.hidden {
-  display: none;
+
+#sidebar.open {
+  display: block;
 }
 
 #logoutButton {
@@ -144,22 +210,7 @@
   text-decoration: underline;
 }
 
-/* Overlay styling */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  display: none;
-}
 
-/* Open sidebar styles */
-.sidebar.open {
-  right: 0;
-}
 
 
 /* General container styling */
@@ -380,15 +431,25 @@ h1 {
   </style>
 </head>
 <body>
-  <h1>ChatGPT Responses</h1>
-
-  <div id="userMenu" class="user-menu">
-    <button id="menuButton">
-      <img src="../assets/user-icon.png" alt="User Icon" class="user-icon" />
-    </button>
-  </div>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="logo">AI Calendar</div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Responses</a></li>
+      <li><a href="../Calendar/calendarMain.html">Calendar</a></li>
+      <li><a href="https://discord.gg/b35jhnCH">Discord</a></li>
+    </ul>
+    <div class="navbar-right">
+      <div id="userMenu" class="user-menu">
+        <button id="menuButton">
+          <img src="../assets/user-icon.png" alt="User Icon" class="user-icon" />
+        </button>
+      </div>
+    </div>
+  </nav>
   
-  <div id="sidebar" class="sidebar">
+  <div id="sidebar" class="sidebar"> <!-- Changed the ID from sidebar to menuOptions -->
     <div class="sidebar-header">
       <h2>User Menu</h2>
       <button id="closeSidebar" class="close-sidebar">&times;</button>
@@ -399,12 +460,13 @@ h1 {
       <div class="feedback-section">
         <h3>Any Feedback?</h3>
         <p>Email: <a href="mailto:mchlrotaru@gmail.com">mchlrotaru@gmail.com</a></p>
-        <p>Discord: <a href="https://discord.gg/b35jhnCH" target="_blank">Visit discord</a></p>
+        <p>Discord: <a href="https://discord.gg/k8ScmC29N5" target="_blank">Visit Discord</a></p>
       </div>
     </div>
   </div>
-
+  
   <div id="overlay" class="overlay"></div>
+  
 
 
 
@@ -427,7 +489,7 @@ h1 {
 </div>
 
 
-<button id="calendarButton">Calendar</button>
+
 
   <script type="module" src="./displayResponses.js"></script>
   <script type="module" src="./aiChatHandler.js"></script>
