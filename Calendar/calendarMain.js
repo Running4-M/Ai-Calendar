@@ -195,17 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Error processing AI responses: ", error.message);
     }
   });
-  const chatgptResponsesButton = document.getElementById("chatgptResponsesButton");
-  // Add click event listener to the button
-  chatgptResponsesButton.addEventListener("click", () => {
-    // Redirect to chatgpt_Responses.html
-    window.location.href = "../display_Responses/chatgpt_Response.html";
-  });
-  // Toggle menu visibility
-  document.getElementById("menuButton").addEventListener("click", () => {
-    const menuOptions = document.getElementById("menuOptions");
-    menuOptions.style.display = menuOptions.style.display === "none" ? "block" : "none";
-  });
+  
   // Handle logout
   document.getElementById("logoutButton").addEventListener("click", async () => {
     try {
@@ -217,30 +207,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Failed to log out. Please try again.");
     }
   });
-  const menuButton = document.getElementById("menuButton");
+  // Get elements from the DOM
+const menuButton = document.getElementById("menuButton");
 const sidebar = document.getElementById("sidebar");
 const closeSidebar = document.getElementById("closeSidebar");
 const overlay = document.getElementById("overlay");
-const userIcon = document.querySelector(".user-icon"); // Select the user icon
-const helpButton = document.getElementById("helpButton"); // Select the help button
-// Open the sidebar
+const helpButton = document.getElementById("helpButton");
+
+// Toggle sidebar visibility when menu button is clicked
 menuButton.addEventListener("click", () => {
-  sidebar.classList.add("open");
-  overlay.classList.add("visible");
-  userIcon.classList.add("hidden"); // Hide the user icon
+  sidebar.classList.add("open"); // Add the open class
+  overlay.style.display = "block"; // Show the overlay
 });
-// Close the sidebar
+
+// Close the sidebar when the close button is clicked
 closeSidebar.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
+  sidebar.classList.remove("open"); // Remove the open class
+  overlay.style.display = "none"; // Hide the overlay
 });
+
 // Close the sidebar when clicking the overlay
 overlay.addEventListener("click", () => {
-  sidebar.classList.remove("open");
-  overlay.classList.remove("visible");
-  userIcon.classList.remove("hidden"); // Show the user icon
+  sidebar.classList.remove("open"); // Remove the open class
+  overlay.style.display = "none"; // Hide the overlay
 });
+
 // Redirect to the help page when the help button is clicked
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
