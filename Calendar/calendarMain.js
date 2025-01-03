@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         localStorage.setItem(`popupSeen_${userId}`, 'true'); // Store that the user has seen the popup
       }
     } else {
-      alert("You need to log in first.");
+      
       window.location.href = "../Login/login.html";
       return;
     }
