@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChatGPT Responses</title>
   <style>
-        @media (max-width: 768px) {
+  @media (max-width: 768px) {
   .navbar-left .logo {
     display: none;
   }
-          
-#chatWindow {
-    width: 90%; /* Make the chat window take up 90% of the screen width */
-    left: 5%;  /* Center the chat window horizontally */
-    right: 5%; /* Add symmetry */
-    height: 60%; /* Adjust height for better usability on small screens */
-  }
 
-}
+  #chatWindow {
+    width: 90%; /* Make the chat window take up 90% of the screen width */
+    height: 60%; /* Adjust height for better usability on small screens */
+    margin: 0 auto; /* Center the chat window horizontally */
+    position: relative; /* Ensure that 'left' and 'right' properties work */
+    box-sizing: border-box; /* Include padding and borders in the width calculation */
+  }
+  }
   body, h3, p, ul, li, a, button {
   margin: 0;
   padding: 0;
