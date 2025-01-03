@@ -13,10 +13,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const auth = getAuth();
   let userId = null;
 
-  // Check for authentication state
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userId = user.uid;
+  
+      // Check if user has already seen the popup
+      const hasSeenPopup = localStorage.getItem(`popupSeen_${userId}`);
+  
+      // If the user has not seen the popup, show it
+      if (!hasSeenPopup) {
+        showPopup();
+        localStorage.setItem(`popupSeen_${userId}`, 'true'); // Store that the user has seen the popup
+      }
     } else {
       alert("You need to log in first.");
       window.location.href = "../Login/login.html";
@@ -236,5 +244,15 @@ overlay.addEventListener("click", () => {
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
+  // Function to show the popup
+function showPopup() {
+  const popup = document.getElementById("popup");
+  popup.style.display = "block";
+
+  const closeBtn = document.getElementById("closePopup");
+  closeBtn.addEventListener("click", () => {
+    popup.style.display = "none"; // Close the popup when clicked
+  });
+}
   
 });
