@@ -11,6 +11,41 @@
     <script defer src="https://cloud.umami.is/script.js" data-website-id="4014d8e5-f547-4ad6-a4a3-4716efea07aa"></script>
   </head>
   <style>
+     /* Popup style */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+  width: 300px;
+  text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  cursor: pointer;
+}
         @media (max-width: 768px) {
   .navbar-left .logo {
     display: none;
@@ -289,6 +324,15 @@
 </div>
 
     <button id="closeModal" type="button" style="display: none;">Cancel</button>
+  </div>
+</div>
+    <!-- Popup HTML -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <span id="closePopup" class="close-btn">&times;</span>
+    <p>It has come to my attention that there may be an issue with the login flow.</p>
+<p>If you're experiencing a similar problem, please feel free to join the Discord server or email me privately. Additionally, if you have any feedback or suggestions, don't hesitate to reach out!</p>
+    <button id="surveyBtn" onclick="window.location.href= 'https://discord.gg/k8ScmC29N5'">Discord</button>
   </div>
 </div>
 
