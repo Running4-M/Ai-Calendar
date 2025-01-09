@@ -244,15 +244,5 @@ overlay.addEventListener("click", () => {
 helpButton.addEventListener("click", () => {
   window.location.href = "../help/help.html"; // Redirect to the help page
 });
-  // Function to show the popup
-function showPopup() {
-  const popup = document.getElementById("popup");
-  popup.style.display = "block";
-
-  const closeBtn = document.getElementById("closePopup");
-  closeBtn.addEventListener("click", () => {
-    popup.style.display = "none"; // Close the popup when clicked
-  });
-}
   
 });
